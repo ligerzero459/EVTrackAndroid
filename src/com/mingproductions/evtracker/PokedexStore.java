@@ -37,7 +37,7 @@ public class PokedexStore {
 		allPokemon.add(pokemon);
 	}
 
-	public ArrayList<EVPokemon> getAllPokemon() {
+	public ArrayList<EVPokemon> allPokemon() {
 		return allPokemon;
 	}
 }

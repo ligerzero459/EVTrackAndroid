@@ -26,6 +26,11 @@ public class GameStore {
 		return sharedStore;
 	}
 	
+	public ArrayList<PokemonGame> allGames()
+	{
+		return allGames;
+	}
+	
 	public void addGame(PokemonGame game)
 	{
 		allGames.add(game);

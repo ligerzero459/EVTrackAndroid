@@ -5,17 +5,17 @@ import java.util.ArrayList;
 public class PokemonGame {
 	private ArrayList<EVPokemon> mAllPokemon;
 	private String mGameName;
-	private String mImageName;
+	private R.drawable mImageDrawable;
 	
 	public PokemonGame() {
-		this("Default Game", "");
+		this("Default Game", null);
 	}
 	
-	public PokemonGame(String gameName, String imageName) {
-		this(gameName, imageName, new ArrayList<EVPokemon>());
+	public PokemonGame(String gameName, R.drawable imageDrawable) {
+		this(gameName, imageDrawable, new ArrayList<EVPokemon>());
 	}
 	
-	public PokemonGame(String gameName, String imageName, ArrayList<EVPokemon> allPokemon) {
+	public PokemonGame(String gameName, R.drawable imageDrawable, ArrayList<EVPokemon> allPokemon) {
 		
 	}
 
@@ -27,8 +27,8 @@ public class PokemonGame {
 		return mGameName;
 	}
 
-	public String getImageName() {
-		return mImageName;
+	public R.drawable getImageDrawable() {
+		return mImageDrawable;
 	}
 
 	public void setAllPokemon(ArrayList<EVPokemon> allPokemon) {
@@ -39,8 +39,8 @@ public class PokemonGame {
 		mGameName = gameName;
 	}
 
-	public void setImageName(String imageName) {
-		mImageName = imageName;
+	public void setImageDrawable(R.drawable imageDrawable) {
+		mImageDrawable = imageDrawable;
 	}
 	
 }

@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">EVTracker</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    
+    <string name="games_title">EV Tracker</string>
+    <string name="pokemon_list_title">Pokemon</string>
 
 </resources>
