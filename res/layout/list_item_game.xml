@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/Light_Gray" >
 
     <ImageView
         android:id="@+id/game_image"
@@ -9,18 +10,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="7dp"
-        android:src="@drawable/ic_launcher" />
+        android:layout_marginLeft="7dp" />
     
-    <TextView 
+    <TextView
         android:id="@+id/game_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/game_image"
         android:layout_centerVertical="true"
-        android:textStyle="bold"
-        android:textSize="20sp"
+        android:layout_toRightOf="@id/game_image"
         android:paddingLeft="6dp"
-        android:text="Test Text" />
+        android:text="Test Text"
+        android:textColor="@color/White"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Black" >
+
+    <ImageView
+        android:id="@+id/image_pokemon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:src="@drawable/p001" />
+    
+    <TextView
+        android:id="@+id/name_pokemon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/image_pokemon"
+        android:layout_toRightOf="@+id/image_pokemon"
+        android:layout_marginLeft="17dp"
+        android:text="TextView"
+        android:textColor="@color/White" />
+
+    <TextView
+        android:id="@+id/label_hp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/image_pokemon"
+        android:layout_below="@+id/name_pokemon"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="8dp"
+        android:text="HP"
+        android:textColor="@color/Red" />
+    
+    <TextView
+        android:id="@+id/hp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/label_hp"
+        android:layout_alignBaseline="@+id/label_hp"
+        android:layout_marginLeft="18dp"
+        android:text="0"
+        android:textColor="@color/Red" />
+    
+    <TextView
+        android:id="@+id/label_atk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/label_hp"
+        android:layout_alignLeft="@+id/label_hp"
+        android:text="Atk"
+        android:textColor="@color/Orange" />
+
+    <TextView
+        android:id="@+id/label_def"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/label_atk"
+        android:layout_alignLeft="@+id/label_atk"
+        android:text="Def"
+        android:textColor="@color/Yellow" />
+
+    <TextView
+        android:id="@+id/atk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hp"
+        android:layout_alignBaseline="@+id/label_atk"
+        android:text="0"
+        android:textColor="@color/Orange" />
+
+    <TextView
+        android:id="@+id/def"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/label_def"
+        android:layout_alignLeft="@+id/hp"
+        android:text="0"
+        android:textColor="@color/Yellow" />
+
+    <TextView
+        android:id="@+id/label_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/def"
+        android:layout_toRightOf="@+id/label_def"
+        android:layout_marginLeft="55dp"
+        android:text="Speed"
+        android:textColor="@color/Purple" />
+
+    <TextView
+        android:id="@+id/label_spdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/atk"
+        android:layout_alignLeft="@+id/label_speed"
+        android:text="Sp Def"
+        android:textColor="@color/Green" />
+
+    <TextView
+        android:id="@+id/label_spatk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/label_hp"
+        android:layout_alignLeft="@+id/label_speed"
+        android:text="Sp Atk"
+        android:textColor="@color/Light_Blue" />
+
+    <TextView
+        android:id="@+id/spdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/label_spdef"
+        android:layout_alignLeft="@+id/spatk"
+        android:text="0"
+        android:textColor="@color/Green" />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/label_speed"
+        android:layout_alignLeft="@+id/spatk"
+        android:text="0"
+        android:textColor="@color/Purple" />
+
+    <TextView
+        android:id="@+id/spatk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/label_spatk"
+        android:layout_toRightOf="@+id/label_spatk"
+        android:layout_marginLeft="18dp"
+        android:text="0"
+        android:textColor="@color/Light_Blue" />
+
+</RelativeLayout>

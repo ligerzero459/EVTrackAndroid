@@ -2,8 +2,22 @@
 <resources>
 
     <string name="app_name">EVTracker</string>
+    <string name="list_pokemon_name">Pokemon</string>
     
     <string name="games_title">EV Tracker</string>
     <string name="pokemon_list_title">Pokemon</string>
+    
+    <string name="hp">HP</string>
+    <string name="atk">Attack</string>
+    <string name="def">Defense</string>
+    <string name="spatk">Sp. Atk</string>
+    <string name="spdef">Sp. Def</string>
+    <string name="speed">Speed</string>
+    
+    <string name="default_ev">0/255</string>
+    <string name="default_total">0/510</string>
+    <string name="total_ev">Total EV\'s</string>
+    <string name="battled">Battled Pokemon</string>
+    <string name="fix">Fix Effort Values</string>
 
 </resources>
