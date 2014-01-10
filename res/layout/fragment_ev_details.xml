@@ -8,7 +8,7 @@
     <Button
         android:id="@+id/renameButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
@@ -282,7 +282,7 @@
     <Button
         android:id="@+id/battled_pokemon_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/ev_layout"
@@ -296,7 +296,7 @@
     <Button
         android:id="@+id/fix_evs_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:background="@color/White"

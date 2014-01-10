@@ -2,10 +2,12 @@ package com.mingproductions.evtracker;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-public abstract class SingleFragmentActivity extends FragmentActivity {
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+public abstract class SingleFragmentActivity extends SherlockFragmentActivity {
 	protected abstract Fragment createFragment();
 
 	@Override
@@ -20,5 +22,11 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
 			fragment = createFragment();
 			fm.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
 		}
+	}
+	
+	@Override
+	public ActionBar getSupportActionBar()
+	{
+		return super.getSupportActionBar();
 	}
 }

@@ -47,9 +47,9 @@ public class PokedexStore {
 		allPokemon.add(pokemon);
 	}
 	
-	public void addPokemon(int pokemonNumber, String pokemonName, int imageResource, int level, int hp, int atk, int def, int spAtk, int spDef, 
+	public void addPokemon(int pokemonNumber, String pokemonName, int level, int hp, int atk, int def, int spAtk, int spDef, 
 			int speed) {
-		EVPokemon pokemon = new EVPokemon(pokemonNumber, pokemonName, imageResource, level, hp, atk, def, spAtk, spDef, speed);
+		EVPokemon pokemon = new EVPokemon(pokemonNumber, pokemonName, level, hp, atk, def, spAtk, spDef, speed);
 		
 		allPokemon.add(pokemon);
 	}

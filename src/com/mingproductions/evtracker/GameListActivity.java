@@ -1,5 +1,7 @@
 package com.mingproductions.evtracker;
 
+import com.actionbarsherlock.app.ActionBar;
+
 import android.support.v4.app.Fragment;
 
 public class GameListActivity extends SingleFragmentActivity {
@@ -7,6 +9,12 @@ public class GameListActivity extends SingleFragmentActivity {
 	@Override
 	protected Fragment createFragment() {
 		return new GameListFragment();
+	}
+	
+	@Override
+	public ActionBar getSupportActionBar()
+	{
+		return super.getSupportActionBar();
 	}
 
 }

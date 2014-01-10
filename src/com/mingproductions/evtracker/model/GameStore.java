@@ -1,13 +1,15 @@
 package com.mingproductions.evtracker.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.res.AssetManager;
+import android.util.Log;
 
 public class GameStore {
+	private static final String FILENAME = "games.json";
+	
 	private ArrayList<PokemonGame> allGames;
+	private EVTrackerJSONSerializer mSerializer;
 	
 	private static GameStore sharedStore;
 	private Context mAppContext;
@@ -15,10 +17,16 @@ public class GameStore {
 	private GameStore(Context appContext)
 	{
 		mAppContext = appContext;
-		allGames = new ArrayList<PokemonGame>();
+		mSerializer = new EVTrackerJSONSerializer(mAppContext, FILENAME);
 		
-		addGame(new PokemonGame());
-		addGame(new PokemonGame("Pokemon Black", 0x7f0202cf));
+		try
+		{
+			allGames = mSerializer.loadGames();
+		}
+		catch (Exception ex)
+		{
+			allGames = new ArrayList<PokemonGame>();
+		}
 		
 	}
 	
@@ -50,5 +58,17 @@ public class GameStore {
 	public PokemonGame gameAtIndex(int index)
 	{
 		return (PokemonGame)allGames.get(index);
+	}
+	
+	public void saveGames()
+	{
+		try
+		{
+			mSerializer.saveGames(allGames);
+		}
+		catch (Exception ex)
+		{
+			Log.e("GameStore", "Error Saving Games", ex);
+		}
 	}
 }

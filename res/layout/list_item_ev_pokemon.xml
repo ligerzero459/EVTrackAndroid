@@ -6,12 +6,12 @@
 
     <ImageView
         android:id="@+id/image_pokemon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:src="@drawable/p001" />
+        android:src="@drawable/default_game" />
     
     <TextView
         android:id="@+id/name_pokemon"
