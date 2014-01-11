@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import com.mingproductions.evtracker.model.GameStore;
 public class EVDetailFragment extends SherlockFragment {
 	// TODO: Start working on EV Fix Activity/Fragment/Layout
 	// TODO: Items activity needs to be created
+	// TODO: Rename activity
 	
 	private EVPokemon mPokemon;
 	private int mGamePos;
@@ -35,10 +35,10 @@ public class EVDetailFragment extends SherlockFragment {
 		mPokemonPos = getArguments().getInt("mPokemon");
 		
 		/**
-		 * Breakdown: retrieves all games from the GameStore, grabs the correct game,
-		 * finds all the Pokemon in that game, and finds the right Pokemon
+		 * Breakdown: retrieves GameStore, looks for the game at mGamePos and then
+		 * finds a specific Pokemon in that game
 		 */
-		mPokemon = GameStore.sharedStore(getActivity()).allGames().get(mGamePos).getAllPokemon().get(mPokemonPos);
+		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
 		
 		if (NavUtils.getParentActivityName(getActivity()) != null)
 		{
@@ -136,7 +136,7 @@ public class EVDetailFragment extends SherlockFragment {
 		total.setText(mPokemon.getTotal() + "/510");
 		
 		Button battled = (Button)v.findViewById(R.id.battled_pokemon_button);
-		battled.setOnClickListener(new OnClickListener() {
+		battled.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -148,6 +148,16 @@ public class EVDetailFragment extends SherlockFragment {
 				i.putExtras(b);
 				
 				startActivity(i);
+			}
+		});
+		
+		Button fixEvs = (Button)v.findViewById(R.id.fix_evs_button);
+		fixEvs.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO set onClick to start a fixEvs activity
+				
 			}
 		});
 		

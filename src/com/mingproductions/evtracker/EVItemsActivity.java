@@ -1,13 +1,25 @@
 package com.mingproductions.evtracker;
 
+import com.actionbarsherlock.app.ActionBar;
+
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 public class EVItemsActivity extends SingleFragmentActivity {
 
 	@Override
 	protected Fragment createFragment() {
-		// TODO: Make newInstance() in fragment. Pass the gamePos and pokemonPos
-		return null;
+		Bundle b = getIntent().getExtras();
+		int position = b.getInt("pokemon");
+		int gamePos = b.getInt("game");
+		
+		return EVItemsFragment.newInstance(position, gamePos);
+	}
+	
+	@Override
+	public ActionBar getSupportActionBar()
+	{
+		return super.getSupportActionBar();
 	}
 
 }
