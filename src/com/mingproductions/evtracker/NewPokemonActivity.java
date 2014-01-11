@@ -10,7 +10,7 @@ public class NewPokemonActivity extends SingleFragmentActivity {
 	@Override
 	protected Fragment createFragment() {
 		Bundle b = getIntent().getExtras();
-		int position = (int)b.getInt(GameListFragment.EXTRA_GAME_POSITION);
+		int position = (int)b.getInt(ListGameFragment.EXTRA_GAME_POSITION);
 		
 		return NewPokemonFragment.newInstance(position);
 	}

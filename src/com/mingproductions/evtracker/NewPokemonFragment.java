@@ -23,23 +23,23 @@ import com.mingproductions.evtracker.model.PokedexStore;
 public class NewPokemonFragment extends SherlockListFragment {
 	// TODO: Implement search bar
 	
-	private ArrayList<EVPokemon> allPokemon;
-	private int gamePos;
+	private ArrayList<EVPokemon> mAllPokemon;
+	private int mGamePos;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
 		
-		gamePos = (int)getArguments().getInt(GameListFragment.EXTRA_GAME_POSITION);
-		allPokemon = PokedexStore.sharedStore(getActivity()).allPokemon();
+		mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
+		mAllPokemon = PokedexStore.sharedStore(getActivity()).allPokemon();
 		
 		if (NavUtils.getParentActivityName(getActivity()) != null)
 		{
 			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		
-		PokemonAdapter adapter = new PokemonAdapter(allPokemon);
+		PokemonAdapter adapter = new PokemonAdapter(mAllPokemon);
 		setListAdapter(adapter);
 		
 		setRetainInstance(true);
@@ -48,16 +48,16 @@ public class NewPokemonFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-		EVPokemon newPokemon = new EVPokemon(allPokemon.get(position).getPokemonNumber(), 
-				allPokemon.get(position).getPokemonName());
+		EVPokemon newPokemon = new EVPokemon(mAllPokemon.get(position).getPokemonNumber(), 
+				mAllPokemon.get(position).getPokemonName());
 		
 		/**
 		 * This super long line gets the GameStore singleton, gets all the 
 		 * games from the GameStore, get the selected game, then get a
-		 * reference to the allPokemon array and then add the newPokemon
+		 * reference to the mAllPokemon array and then add the newPokemon
 		 * to the game array
 		 **/
-		GameStore.sharedStore(getActivity()).allGames().get(gamePos).getAllPokemon().add(newPokemon);
+		GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).addPokemon(newPokemon);
 		GameStore.sharedStore(getActivity()).saveGames();
 		
 		getActivity().finish();
@@ -120,7 +120,7 @@ public class NewPokemonFragment extends SherlockListFragment {
 	public static NewPokemonFragment newInstance(int position)
 	{
 		Bundle args = new Bundle();
-		args.putInt(GameListFragment.EXTRA_GAME_POSITION, position);
+		args.putInt(ListGameFragment.EXTRA_GAME_POSITION, position);
 		
 		NewPokemonFragment fragment = new NewPokemonFragment();
 		fragment.setArguments(args);

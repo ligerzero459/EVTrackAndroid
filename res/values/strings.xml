@@ -23,5 +23,10 @@
     <string name="new_game">New Game</string>
     <string name="new_pokemon">New Pokemon</string>
     <string name="fix">Fix Effort Values</string>
+    <string name="no_games">You have no games</string>
+    <string name="no_pokemon">No tracked pokemon</string>
+    
+    <string name="delete_pokemon">Delete Pokemon</string>
+    <string name="delete_game">Delete Game</string>
 
 </resources>

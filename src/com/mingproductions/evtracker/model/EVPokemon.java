@@ -142,72 +142,57 @@ public class EVPokemon {
 	
 	public void addPokemon(EVPokemon p)
 	{
-		/**
-		 * TODO Fix logic for adding EVs to Pokemon. Use new version from iOS EVTracker
-		 */
+		// Set multiplier based on if pokemon has PKRS and is
+		// holding Macho Brace
+		int multiplier = 1;
+		
 		if (mPKRS && mMachoBrace)
 		{
-			addHP(4 * p.getHp());
-			addAttack(4 * p.getAtk());
-			addDefense(4 * p.getDef());
-			addSpAttack(4 * p.getSpAtk());
-			addSpDefense(4 * p.getSpDef());
-			addSpeed(4 * p.getSpeed());
+			multiplier = 4;
 		}
-		else if (mMachoBrace)
+		else if (mMachoBrace || mPKRS)
 		{
-			addHP(2 * p.getHp());
-			addAttack(2 * p.getAtk());
-			addDefense(2 * p.getDef());
-			addSpAttack(2 * p.getSpAtk());
-			addSpDefense(2 * p.getSpDef());
-			addSpeed(2 * p.getSpeed());
-		}
-		else if (mPKRS)
-		{
-			addHP(2 * p.getHp());
-			addAttack(2 * p.getAtk());
-			addDefense(2 * p.getDef());
-			addSpAttack(2 * p.getSpAtk());
-			addSpDefense(2 * p.getSpDef());
-			addSpeed(2 * p.getSpeed());
+			multiplier = 2;
 		}
 		else
 		{
-			addHP(p.getHp());
-			addAttack(p.getAtk());
-			addDefense(p.getDef());
-			addSpAttack(p.getSpAtk());
-			addSpDefense(p.getSpDef());
-			addSpeed(p.getSpeed());
+			multiplier = 1;
 		}
-	}
-	
-	public void checkForItems()
-	{
-		if (mPowerWeight)
-		{
-			addHP(4);
+		
+		if (mPowerWeight) {
+			addHP((p.mHp + 4) * multiplier);
+		} else {
+			addHP((p.mHp) * multiplier);
 		}
-		else if (mPowerBracer)
-		{
-			addAttack(4);
+		
+		if (mPowerBracer) {
+			addAttack((p.mAtk + 4) * multiplier);
+		} else {
+			addAttack((p.mAtk) * multiplier);
 		}
-		else if (mPowerBelt)
-		{
-			addDefense(4);
+		
+		if (mPowerBelt) {
+			addDefense((p.mDef + 4) * multiplier);
+		} else {
+			addDefense((p.mDef) * multiplier);
 		}
-		else if (mPowerLens)
-		{
-			addSpAttack(4);
+		
+		if (mPowerLens) {
+			addSpAttack((p.mSpAtk + 4) * multiplier);
+		} else {
+			addSpAttack((p.mSpAtk) * multiplier);
 		}
-		else if (mPowerBand)
-		{
-			addSpDefense(4);
+		
+		if (mPowerBand) {
+			addSpDefense((p.mSpDef + 4) * multiplier);
+		} else {
+			addSpDefense((p.mSpDef) * multiplier);
 		}
-		else if (mPowerAnklet)
-		{
-			addSpeed(4);
+		
+		if (mPowerAnklet) {
+			addSpeed((p.mSpeed + 4) * multiplier);
+		} else {
+			addSpeed((p.mSpeed) * multiplier);
 		}
 	}
 	
@@ -249,6 +234,11 @@ public class EVPokemon {
 	
 	public int getSpeed() {
 		return mSpeed;
+	}
+	
+	public int getTotal()
+	{
+		return (mHp + mAtk + mDef + mSpAtk + mSpDef + mSpeed);
 	}
 	
 	public Boolean isPKRS() {

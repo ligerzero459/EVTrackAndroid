@@ -82,4 +82,24 @@ public class PokemonGame {
 		return json;
 	}
 	
+	public void addPokemon(EVPokemon p)
+	{
+		mAllPokemon.add(p);
+	}
+	
+	public void removePokemon(EVPokemon p)
+	{
+		mAllPokemon.remove(p);
+	}
+	
+	public EVPokemon pokemonAtIndex(int position)
+	{
+		return mAllPokemon.get(position);
+	}
+	
+	public void replacePokemon(int position, EVPokemon p)
+	{
+		mAllPokemon.set(position, p);
+	}
+	
 }

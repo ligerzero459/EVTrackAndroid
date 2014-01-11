@@ -20,7 +20,7 @@ import com.mingproductions.evtracker.model.PokemonGame;
 
 public class NewGameFragment extends SherlockListFragment {
 	
-	private ArrayList<PokemonGame> allGames;
+	private ArrayList<PokemonGame> mAllGames;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
@@ -28,9 +28,9 @@ public class NewGameFragment extends SherlockListFragment {
 		super.onCreate(savedInstanceBundle);
 		setRetainInstance(true);
 		
-		allGames = GameTableStore.sharedStore(getActivity()).allGames();
+		mAllGames = GameTableStore.sharedStore(getActivity()).allGames();
 		
-		GameAdapter adapter = new GameAdapter(allGames);
+		GameAdapter adapter = new GameAdapter(mAllGames);
 		setListAdapter(adapter);
 		
 		if (NavUtils.getParentActivityName(getActivity()) != null)
@@ -42,7 +42,7 @@ public class NewGameFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-		PokemonGame newGame = allGames.get(position);
+		PokemonGame newGame = mAllGames.get(position);
 		
 		GameStore.sharedStore(getActivity()).addGame(newGame);
 		GameStore.sharedStore(getActivity()).saveGames();

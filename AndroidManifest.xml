@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name=".GameListActivity"
+            android:name=".ListGameActivity"
             android:label="@string/games_title" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
         </activity>
         
         <activity 
-            android:name=".PokemonListActivity"
+            android:name=".ListPokemonActivity"
             android:label="@string/list_pokemon_name">
             <meta-data 
                 android:value=".GameListActivity"
@@ -38,7 +38,7 @@
         </activity>
         
         <activity
-            android:name=".BattledPokemonActivity"
+            android:name=".EVBattledPokemonActivity"
             android:label="@string/battled" >
         </activity>
         

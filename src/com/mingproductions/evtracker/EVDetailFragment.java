@@ -20,25 +20,25 @@ import com.mingproductions.evtracker.model.GameStore;
 
 public class EVDetailFragment extends SherlockFragment {
 	// TODO: Start working on EV Fix Activity/Fragment/Layout
-	// TODO: Add code to save Pokemon on stop or pause (will decide later)
+	// TODO: Items activity needs to be created
 	
-	private EVPokemon pokemon;
-	private int gamePos;
-	private int pokemonPos;
+	private EVPokemon mPokemon;
+	private int mGamePos;
+	private int mPokemonPos;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
 		
-		gamePos = getArguments().getInt("game");
-		pokemonPos = getArguments().getInt("pokemon");
+		mGamePos = getArguments().getInt("game");
+		mPokemonPos = getArguments().getInt("mPokemon");
 		
 		/**
 		 * Breakdown: retrieves all games from the GameStore, grabs the correct game,
 		 * finds all the Pokemon in that game, and finds the right Pokemon
 		 */
-		pokemon = GameStore.sharedStore(getActivity()).allGames().get(gamePos).getAllPokemon().get(pokemonPos);
+		mPokemon = GameStore.sharedStore(getActivity()).allGames().get(mGamePos).getAllPokemon().get(mPokemonPos);
 		
 		if (NavUtils.getParentActivityName(getActivity()) != null)
 		{
@@ -46,20 +46,50 @@ public class EVDetailFragment extends SherlockFragment {
 		}
 		
 		// Set logo in title bar
-		if (pokemon.getPokemonNumber() < 10)
+		if (mPokemon.getPokemonNumber() < 10)
 			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + pokemon.getPokemonNumber(), null, null)));
-		else if (pokemon.getPokemonNumber() < 100)
+					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
+		else if (mPokemon.getPokemonNumber() < 100)
 			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + pokemon.getPokemonNumber(), null, null)));
+					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
 		else
 			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p" + pokemon.getPokemonNumber(), null, null)));
+					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
 	}
 	
+	@Override
 	public void onResume()
 	{
 		super.onResume();
+		GameStore.sharedStore(getActivity()).saveGames();
+		
+		TextView hp = (TextView)getView().findViewById(R.id.hp_evs);
+		hp.setText(mPokemon.getHp() + "/255");
+		
+		TextView atk = (TextView)getView().findViewById(R.id.atk_evs);
+		atk.setText(mPokemon.getAtk() + "/255");
+		
+		TextView def = (TextView)getView().findViewById(R.id.def_evs);
+		def.setText(mPokemon.getDef() + "/255");
+		
+		TextView spatk = (TextView)getView().findViewById(R.id.sp_atk_evs);
+		spatk.setText(mPokemon.getSpAtk() + "/255");
+		
+		TextView spdef = (TextView)getView().findViewById(R.id.sp_def_evs);
+		spdef.setText(mPokemon.getSpDef() + "/255");
+		
+		TextView speed = (TextView)getView().findViewById(R.id.speed_evs);
+		speed.setText(mPokemon.getSpeed() + "/255");
+		
+		TextView total = (TextView)getView().findViewById(R.id.total_evs);
+		total.setText(mPokemon.getTotal() + "/510");
+	}
+	
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		GameStore.sharedStore(getActivity()).saveGames();
 	}
 	
 	@Override
@@ -68,50 +98,53 @@ public class EVDetailFragment extends SherlockFragment {
 		View v = inflater.inflate(R.layout.fragment_ev_details, parent, false);
 		
 		Button renameButton = (Button)v.findViewById(R.id.renameButton);
-		renameButton.setText(pokemon.getPokemonName());
+		renameButton.setText(mPokemon.getPokemonName());
 		
 		Drawable image = null;
 		
-		if (pokemon.getPokemonNumber() < 10)
+		if (mPokemon.getPokemonNumber() < 10)
 			image = getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + pokemon.getPokemonNumber(), null, null));
-		else if (pokemon.getPokemonNumber() < 100)
+					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null));
+		else if (mPokemon.getPokemonNumber() < 100)
 			image = getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + pokemon.getPokemonNumber(), null, null));
+					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null));
 		else
 			image = getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p" + pokemon.getPokemonNumber(), null, null));
+					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null));
 		
 		renameButton.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
 		
 		TextView hp = (TextView)v.findViewById(R.id.hp_evs);
-		hp.setText(pokemon.getHp() + "/255");
+		hp.setText(mPokemon.getHp() + "/255");
 		
 		TextView atk = (TextView)v.findViewById(R.id.atk_evs);
-		atk.setText(pokemon.getAtk() + "/255");
+		atk.setText(mPokemon.getAtk() + "/255");
 		
 		TextView def = (TextView)v.findViewById(R.id.def_evs);
-		def.setText(pokemon.getDef() + "/255");
+		def.setText(mPokemon.getDef() + "/255");
 		
 		TextView spatk = (TextView)v.findViewById(R.id.sp_atk_evs);
-		spatk.setText(pokemon.getSpAtk() + "/255");
+		spatk.setText(mPokemon.getSpAtk() + "/255");
 		
 		TextView spdef = (TextView)v.findViewById(R.id.sp_def_evs);
-		spdef.setText(pokemon.getSpDef() + "/255");
+		spdef.setText(mPokemon.getSpDef() + "/255");
 		
 		TextView speed = (TextView)v.findViewById(R.id.speed_evs);
-		speed.setText(pokemon.getSpeed() + "/255");
+		speed.setText(mPokemon.getSpeed() + "/255");
+		
+		TextView total = (TextView)v.findViewById(R.id.total_evs);
+		total.setText(mPokemon.getTotal() + "/510");
 		
 		Button battled = (Button)v.findViewById(R.id.battled_pokemon_button);
 		battled.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getActivity(), BattledPokemonActivity.class);
+				Intent i = new Intent(getActivity(), EVBattledPokemonActivity.class);
 				
 				Bundle b = new Bundle();
-				b.putInt("pokemon", pokemonPos);
-				b.putInt("game", gamePos);
+				b.putInt("mPokemon", mPokemonPos);
+				b.putInt("game", mGamePos);
 				i.putExtras(b);
 				
 				startActivity(i);
@@ -146,7 +179,7 @@ public class EVDetailFragment extends SherlockFragment {
 	public static EVDetailFragment newInstance(int position, int game)
 	{
 		Bundle args = new Bundle();
-		args.putInt("pokemon", position);
+		args.putInt("mPokemon", position);
 		args.putInt("game", game);
 		
 		EVDetailFragment fragment = new EVDetailFragment();
