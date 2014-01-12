@@ -51,6 +51,7 @@
             android:name=".NewPokemonActivity" 
             android:label="@string/new_pokemon">
         </activity>
+        <activity android:name=".EVItemsActivity"></activity>
         
     </application>
 

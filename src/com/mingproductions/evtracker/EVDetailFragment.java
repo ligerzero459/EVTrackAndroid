@@ -30,6 +30,8 @@ public class EVDetailFragment extends SherlockFragment {
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 		
 		mGamePos = getArguments().getInt("game");
 		mPokemonPos = getArguments().getInt("mPokemon");
@@ -168,6 +170,7 @@ public class EVDetailFragment extends SherlockFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
 		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_ev_details_menu, menu);
 	}
 	
 	@Override
@@ -180,6 +183,20 @@ public class EVDetailFragment extends SherlockFragment {
 			{
 				NavUtils.navigateUpFromSameTask(getSherlockActivity());
 			}
+			return true;
+		case R.id.menu_item_delete_pokemon:
+			GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).removePokemon(mPokemon);
+			getActivity().finish();
+			return true;
+		case R.id.menu_item_ev_items:
+			Intent i = new Intent(getActivity(), EVItemsActivity.class);
+
+			Bundle b = new Bundle();
+			b.putInt("pokemon", mPokemonPos);
+			b.putInt("game", mGamePos);
+			i.putExtras(b);
+			
+			startActivity(i);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

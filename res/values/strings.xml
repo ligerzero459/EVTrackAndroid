@@ -26,7 +26,27 @@
     <string name="no_games">You have no games</string>
     <string name="no_pokemon">No tracked pokemon</string>
     
+    <!-- Menu Items -->
     <string name="delete_pokemon">Delete Pokemon</string>
     <string name="delete_game">Delete Game</string>
+    <string name="items">Items</string>
+    
+    <!-- EV Items -->
+    <string name="pkrs">PKRS</string>
+    <string name="macho_brace">Macho Brace</string>
+    <string name="power_weight">Power Weight</string>
+    <string name="power_anklet">Power Anklet</string>
+    <string name="power_band">Power Band</string>
+    <string name="power_belt">Power Belt</string>
+    <string name="power_lens">Power Lens</string>
+    <string name="power_bracer">Power Bracer</string>
+    
+    <string name="calcium">Calcium</string>
+    <string name="carbos">Carbos</string>
+    <string name="hp_up">HP Up</string>
+    <string name="iron">Iron</string>
+    <string name="protein">Protein</string>
+    <string name="zinc">Zinc</string>
+    <string name="apply">Apply</string>
 
 </resources>
