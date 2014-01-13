@@ -1727,6 +1727,12 @@ containing a value of this type.
         public static final int def_view=0x7f04003c;
         public static final int disableHome=0x7f040009;
         public static final int edit_query=0x7f040026;
+        public static final int ev1=0x7f040082;
+        public static final int ev1_label=0x7f040081;
+        public static final int ev2=0x7f040085;
+        public static final int ev2_label=0x7f040083;
+        public static final int ev3=0x7f040086;
+        public static final int ev3_label=0x7f040084;
         public static final int ev_layout=0x7f040035;
         public static final int fix_evs_button=0x7f04004c;
         public static final int fragmentContainer=0x7f040032;
@@ -1752,11 +1758,11 @@ containing a value of this type.
         public static final int macho_button=0x7f040051;
         public static final int macho_image=0x7f040050;
         public static final int main_scrollview=0x7f040033;
-        public static final int menu_item_delete_game=0x7f040083;
-        public static final int menu_item_delete_pokemon=0x7f040081;
-        public static final int menu_item_ev_items=0x7f040082;
-        public static final int menu_item_new_game=0x7f040084;
-        public static final int menu_item_new_pokemon=0x7f040085;
+        public static final int menu_item_delete_game=0x7f040089;
+        public static final int menu_item_delete_pokemon=0x7f040087;
+        public static final int menu_item_ev_items=0x7f040088;
+        public static final int menu_item_new_game=0x7f04008a;
+        public static final int menu_item_new_pokemon=0x7f04008b;
         public static final int name_pokemon=0x7f040070;
         public static final int new_game_button=0x7f04006b;
         public static final int new_pokemon_button=0x7f04006d;
@@ -1839,9 +1845,10 @@ containing a value of this type.
         public static final int fragment_pokemon_list=0x7f030019;
         public static final int list_item_ev_pokemon=0x7f03001a;
         public static final int list_item_game=0x7f03001b;
-        public static final int list_item_pokemon=0x7f03001c;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001d;
-        public static final int sherlock_spinner_item=0x7f03001e;
+        public static final int list_item_pokedex=0x7f03001c;
+        public static final int list_item_pokemon=0x7f03001d;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001e;
+        public static final int sherlock_spinner_item=0x7f03001f;
     }
     public static final class menu {
         public static final int fragment_ev_details_menu=0x7f0b0000;
