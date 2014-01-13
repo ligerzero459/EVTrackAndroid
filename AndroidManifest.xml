@@ -51,7 +51,13 @@
             android:name=".NewPokemonActivity" 
             android:label="@string/new_pokemon">
         </activity>
-        <activity android:name=".EVItemsActivity"></activity>
+        <activity 
+            android:name=".EVItemsActivity">
+        </activity>
+        <activity
+            android:name=".ListPokedexActivity"
+            android:label="@string/pokedex" >
+        </activity>
         
     </application>
 

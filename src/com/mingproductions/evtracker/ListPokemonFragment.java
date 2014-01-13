@@ -261,17 +261,17 @@ public class ListPokemonFragment extends SherlockListFragment {
 			pokemonName.setText(p.getPokemonName());
 			
 			TextView hp = (TextView)convertView.findViewById(R.id.hp);
-			hp.setText(p.getHp());
+			hp.setText("" + p.getHp());
 			TextView atk = (TextView)convertView.findViewById(R.id.atk);
-			atk.setText(p.getAtk());
+			atk.setText("" + p.getAtk());
 			TextView def = (TextView)convertView.findViewById(R.id.def);
-			def.setText(p.getDef());
+			def.setText("" + p.getDef());
 			TextView spAtk = (TextView)convertView.findViewById(R.id.spatk);
-			spAtk.setText(p.getSpAtk());
+			spAtk.setText("" + p.getSpAtk());
 			TextView spDef = (TextView)convertView.findViewById(R.id.spdef);
-			spDef.setText(p.getSpDef());
+			spDef.setText("" + p.getSpDef());
 			TextView speed = (TextView)convertView.findViewById(R.id.speed);
-			speed.setText(p.getSpeed());
+			speed.setText("" + p.getSpeed());
 			
 			return convertView;
 		}

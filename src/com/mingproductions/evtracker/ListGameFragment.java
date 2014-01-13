@@ -54,11 +54,6 @@ public class ListGameFragment extends SherlockListFragment {
 		
 		GameAdapter adapter = new GameAdapter(mAllGames);
 		setListAdapter(adapter);
-		
-		if (NavUtils.getParentActivityName(getActivity()) != null)
-		{
-			((ListGameActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
 	}
 	
 	@Override
@@ -203,16 +198,18 @@ public class ListGameFragment extends SherlockListFragment {
 	{
 		switch(item.getItemId())
 		{
-		case android.R.id.home:
-			if (NavUtils.getParentActivityName(getActivity()) != null)
-			{
-				NavUtils.navigateUpFromSameTask(getActivity());
-			}
-			return true;
 		case R.id.menu_item_new_game:
+		{
 			Intent i = new Intent(getActivity(), NewGameActivity.class);
 			startActivity(i);
 			return true;
+		}
+		case R.id.menu_item_pokedex:
+		{
+			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
+			startActivity(i);
+			return true;
+		}
 		default:
 			return false;
 		}
