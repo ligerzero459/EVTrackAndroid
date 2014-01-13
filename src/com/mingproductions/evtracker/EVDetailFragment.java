@@ -189,6 +189,7 @@ public class EVDetailFragment extends SherlockFragment {
 			getActivity().finish();
 			return true;
 		case R.id.menu_item_ev_items:
+		{
 			Intent i = new Intent(getActivity(), EVItemsActivity.class);
 
 			Bundle b = new Bundle();
@@ -198,6 +199,12 @@ public class EVDetailFragment extends SherlockFragment {
 			
 			startActivity(i);
 			return true;
+		}
+		case R.id.menu_item_pokedex:
+		{
+			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
+			startActivity(i);
+		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}

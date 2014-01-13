@@ -27,9 +27,6 @@
         <activity 
             android:name=".ListPokemonActivity"
             android:label="@string/list_pokemon_name">
-            <meta-data 
-                android:value=".GameListActivity"
-                android:name="android.support.PARENT_ACTIVITY" />
         </activity>
         
         <activity

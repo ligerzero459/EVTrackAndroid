@@ -218,6 +218,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 			}
 			return true;
 		case R.id.menu_item_new_pokemon:
+		{
 			Intent i = new Intent(getActivity(), NewPokemonActivity.class);
 			
 			Bundle b = new Bundle();
@@ -226,6 +227,12 @@ public class ListPokemonFragment extends SherlockListFragment {
 			i.putExtras(b);
 			startActivity(i);
 			return true;
+		}
+		case R.id.menu_item_pokedex:
+		{
+			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
+			startActivity(i);
+		}
 		default:
 			return false;
 		}

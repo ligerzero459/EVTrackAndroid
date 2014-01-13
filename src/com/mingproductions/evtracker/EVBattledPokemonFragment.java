@@ -2,6 +2,7 @@ package com.mingproductions.evtracker;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -13,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mingproductions.evtracker.model.EVPokemon;
 import com.mingproductions.evtracker.model.GameStore;
@@ -57,6 +60,12 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		getActivity().finish();
 	}
 	
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_default_menu, menu);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -68,6 +77,12 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 				NavUtils.navigateUpFromSameTask(getActivity());
 			}
 			return true;
+		case R.id.menu_item_pokedex:
+		{
+			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
+			startActivity(i);
+			return true;
+		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
