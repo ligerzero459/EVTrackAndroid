@@ -19,7 +19,6 @@ import com.mingproductions.evtracker.model.GameStore;
 
 public class EVDetailFragment extends SherlockFragment {
 	// TODO: Start working on EV Fix Activity/Fragment/Layout
-	// TODO: Items activity needs to be created
 	// TODO: Rename activity
 	
 	private EVPokemon mPokemon;

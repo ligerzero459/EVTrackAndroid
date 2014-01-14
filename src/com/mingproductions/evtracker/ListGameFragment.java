@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -34,53 +33,53 @@ import com.mingproductions.evtracker.model.PokemonGame;
 public class ListGameFragment extends SherlockListFragment {
 	// TODO: Pokedex tab
 	// TODO: Social tab
-	
+
 	public static final String EXTRA_GAME_POSITION = "com.mingproductions.evtracker.game_position";
-	
+
 	private ArrayList<PokemonGame> mAllGames;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
-		
+
 		PokedexStore.sharedStore(getActivity());
 		GameTableStore.sharedStore(getActivity());
-		
+
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
-		
+
 		mAllGames = GameStore.sharedStore(getActivity()).allGames();
-		
+
 		GameAdapter adapter = new GameAdapter(mAllGames);
 		setListAdapter(adapter);
 	}
-	
+
 	@Override
 	public void onResume()
 	{
 		super.onResume();
 		((GameAdapter)getListAdapter()).notifyDataSetChanged();
 	}
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.fragment_game_list, parent, false);
-		
+
 		Button newGameButton = (Button)v.findViewById(R.id.new_game_button);
 		newGameButton.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), NewGameActivity.class);
 				startActivity(i);
 			}
 		});
-		
+
 		ListView listView = (ListView)v.findViewById(android.R.id.list);
-		
+
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
 		{
 			registerForContextMenu(listView);
@@ -146,13 +145,13 @@ public class ListGameFragment extends SherlockListFragment {
 
 		return v;
 	}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
 	{
 		getActivity().getMenuInflater().inflate(R.menu.fragment_game_delete, menu);
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(android.view.MenuItem item)
 	{
@@ -160,7 +159,7 @@ public class ListGameFragment extends SherlockListFragment {
 		int position = info.position;
 		GameAdapter adapter = (GameAdapter)getListAdapter();
 		PokemonGame game = adapter.getItem(position);
-		
+
 		switch(item.getItemId())
 		{
 		case R.id.menu_item_delete_game:
@@ -173,26 +172,26 @@ public class ListGameFragment extends SherlockListFragment {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
 		// Starting Activity
 		Intent i = new Intent(getActivity(), ListPokemonActivity.class);
-		
+
 		Bundle b = new Bundle();
 		b.putInt(EXTRA_GAME_POSITION, position);
-		
+
 		i.putExtras(b);
 		startActivity(i);
 	}
-	
+
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_game_menu, menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -214,32 +213,32 @@ public class ListGameFragment extends SherlockListFragment {
 			return false;
 		}
 	}
-	
+
 	private class GameAdapter extends ArrayAdapter<PokemonGame>
 	{
 		public GameAdapter(ArrayList<PokemonGame> allGames)
 		{
 			super(getActivity(), 0, allGames);
-			
+
 		}
-		
+
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
 			if (convertView == null)
 			{
 				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_game, null);
 			}
-			
+
 			PokemonGame game = getItem(position);
 			Resources resource = getResources();
-			
+
 			ImageView gameImage = (ImageView)convertView.findViewById(R.id.game_image);
 			gameImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
-								+ game.getImageName(), null, null));
-				
+					+ game.getImageName(), null, null));
+
 			TextView gameNameText = (TextView)convertView.findViewById(R.id.game_name);
 			gameNameText.setText(game.getGameName());
-			
+
 			return convertView;
 		}
 	}

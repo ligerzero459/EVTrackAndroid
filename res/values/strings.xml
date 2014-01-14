@@ -50,5 +50,8 @@
     <string name="protein">Protein</string>
     <string name="zinc">Zinc</string>
     <string name="apply">Apply</string>
+    
+    <string name="plus">+</string>
+    <string name="minus">-</string>
 
 </resources>
