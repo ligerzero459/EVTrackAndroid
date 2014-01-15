@@ -48,13 +48,13 @@ public class EVDetailFragment extends SherlockFragment {
 		
 		// Set logo in title bar
 		if (mPokemon.getPokemonNumber() < 10)
-			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
 		else if (mPokemon.getPokemonNumber() < 100)
-			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
 		else
-			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
 	}
 	
@@ -157,8 +157,14 @@ public class EVDetailFragment extends SherlockFragment {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO set onClick to start a fixEvs activity
+				Intent i = new Intent(getActivity(), EVFixActivity.class);
 				
+				Bundle b = new Bundle();
+				b.putInt("mPokemon", mPokemonPos);
+				b.putInt("game", mGamePos);
+				i.putExtras(b);
+				
+				startActivity(i);
 			}
 		});
 		
