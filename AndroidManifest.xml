@@ -32,9 +32,6 @@
         <activity 
             android:name=".ListPokemonActivity"
             android:label="@string/list_pokemon_name">
-            <meta-data 
-                android:value=".GameListActivity"
-                android:name="android.support.PARENT_ACTIVITY" />
         </activity>
         
         <activity
@@ -44,20 +41,38 @@
         
         <activity
             android:name=".EVBattledPokemonActivity"
-            android:label="@string/battled" >
+            android:label="@string/battled"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         
         <activity 
             android:name=".NewGameActivity" 
-            android:label="@string/new_game" >
+            android:label="@string/new_game"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         
         <activity 
             android:name=".NewPokemonActivity" 
-            android:label="@string/new_pokemon">
+            android:label="@string/new_pokemon"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
+        <activity 
+            android:name=".EVItemsActivity">
+        </activity>
+        <activity
+            android:name=".ListPokedexActivity"
+            android:label="@string/pokedex"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        
+        <activity android:name=".EVFixActivity">
+            
+        </activity>
+<<<<<<< HEAD
         <activity android:name=".EVItemsActivity"></activity>
         <activity android:name=".ListPokedexActivity" android:label="@string/pokedex_title"></activity>
+=======
+>>>>>>> origin/master
         
     </application>
 

@@ -218,6 +218,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 			}
 			return true;
 		case R.id.menu_item_new_pokemon:
+		{
 			Intent i = new Intent(getActivity(), NewPokemonActivity.class);
 			
 			Bundle b = new Bundle();
@@ -226,6 +227,12 @@ public class ListPokemonFragment extends SherlockListFragment {
 			i.putExtras(b);
 			startActivity(i);
 			return true;
+		}
+		case R.id.menu_item_pokedex:
+		{
+			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
+			startActivity(i);
+		}
 		default:
 			return false;
 		}
@@ -261,17 +268,17 @@ public class ListPokemonFragment extends SherlockListFragment {
 			pokemonName.setText(p.getPokemonName());
 			
 			TextView hp = (TextView)convertView.findViewById(R.id.hp);
-			hp.setText(p.getHp());
+			hp.setText("" + p.getHp());
 			TextView atk = (TextView)convertView.findViewById(R.id.atk);
-			atk.setText(p.getAtk());
+			atk.setText("" + p.getAtk());
 			TextView def = (TextView)convertView.findViewById(R.id.def);
-			def.setText(p.getDef());
+			def.setText("" + p.getDef());
 			TextView spAtk = (TextView)convertView.findViewById(R.id.spatk);
-			spAtk.setText(p.getSpAtk());
+			spAtk.setText("" + p.getSpAtk());
 			TextView spDef = (TextView)convertView.findViewById(R.id.spdef);
-			spDef.setText(p.getSpDef());
+			spDef.setText("" + p.getSpDef());
 			TextView speed = (TextView)convertView.findViewById(R.id.speed);
-			speed.setText(p.getSpeed());
+			speed.setText("" + p.getSpeed());
 			
 			return convertView;
 		}

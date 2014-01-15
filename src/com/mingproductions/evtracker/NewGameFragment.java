@@ -1,13 +1,19 @@
 package com.mingproductions.evtracker;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,20 +25,21 @@ import com.mingproductions.evtracker.model.GameTableStore;
 import com.mingproductions.evtracker.model.PokemonGame;
 
 public class NewGameFragment extends SherlockListFragment {
-	
+
 	private ArrayList<PokemonGame> mAllGames;
-	
+	private GameAdapter adapter;
+
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
 		setRetainInstance(true);
-		
-		mAllGames = GameTableStore.sharedStore(getActivity()).allGames();
-		
-		GameAdapter adapter = new GameAdapter(mAllGames);
+
+		mAllGames = new ArrayList<PokemonGame>(GameTableStore.sharedStore(getActivity()).allGames());
+
+		adapter = new GameAdapter(mAllGames);
 		setListAdapter(adapter);
-		
+
 		if (NavUtils.getParentActivityName(getActivity()) != null)
 		{
 			((NewGameActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -40,16 +47,51 @@ public class NewGameFragment extends SherlockListFragment {
 	}
 	
 	@Override
+	public void onResume()
+	{
+		super.onResume();
+		//mAllGames = new ArrayList<PokemonGame>(GameTableStore.sharedStore(getActivity()).allGames());
+		adapter.notifyDataSetChanged();
+	}
+
+	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
+	{
+		View v = inflater.inflate(R.layout.fragment_search_list, parent, false);
+
+		EditText searchBox = (EditText)v.findViewById(R.id.inputSearch);
+		searchBox.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				adapter.getFilter().filter(s);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// Required, but not used				
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// Required, but not used
+			}
+		});
+
+		return v;
+	}
+
+	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-		PokemonGame newGame = mAllGames.get(position);
-		
+		PokemonGame newGame = (PokemonGame)l.getItemAtPosition(position);
+
 		GameStore.sharedStore(getActivity()).addGame(newGame);
 		GameStore.sharedStore(getActivity()).saveGames();
-		
+
 		getActivity().finish();
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -65,33 +107,85 @@ public class NewGameFragment extends SherlockListFragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private class GameAdapter extends ArrayAdapter<PokemonGame>
 	{
+		public ArrayList<PokemonGame> original;
+		public ArrayList<PokemonGame> filtered;
+
 		public GameAdapter(ArrayList<PokemonGame> allGames)
 		{
 			super(getActivity(), 0, allGames);
-			
+			original = new ArrayList<PokemonGame>(allGames);
+			filtered = new ArrayList<PokemonGame>(allGames);
 		}
-		
+
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
 			if (convertView == null)
 			{
 				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_game, null);
 			}
-			
+
 			PokemonGame game = getItem(position);
 			Resources resource = getResources();
-			
+
 			ImageView gameImage = (ImageView)convertView.findViewById(R.id.game_image);
 			gameImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
-								+ game.getImageName(), null, null));
-			
+					+ game.getImageName(), null, null));
+
 			TextView gameNameText = (TextView)convertView.findViewById(R.id.game_name);
 			gameNameText.setText(game.getGameName());
-			
+
 			return convertView;
+		}
+		
+		Filter filter = new Filter() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			protected void publishResults(CharSequence constraint, FilterResults results) {
+				filtered = (ArrayList<PokemonGame>)results.values;
+				notifyDataSetChanged();
+				clear();
+				for (PokemonGame g : filtered)
+				{
+					add(g);
+					notifyDataSetInvalidated();
+				}
+			}
+
+			@Override
+			protected FilterResults performFiltering(CharSequence constraint) {
+				FilterResults filterResults = new FilterResults();
+				if(constraint != null && filtered != null)
+				{
+					ArrayList<PokemonGame> tempList = new ArrayList<PokemonGame>();
+					for (PokemonGame g : original)
+					{
+						if (g.getGameName().toLowerCase(Locale.US).contains(constraint.toString().toLowerCase(Locale.US)))
+						{
+							tempList.add(g);
+						}
+					}
+					filterResults.values = tempList;
+					filterResults.count = tempList.size();
+				}
+				else 
+				{
+					ArrayList<PokemonGame> tempList = new ArrayList<PokemonGame>(original);
+					filterResults.values = tempList;
+					filterResults.count = tempList.size();
+				}
+
+				return filterResults;
+			}
+		};
+
+		@Override
+		public Filter getFilter()
+		{
+			return filter;
 		}
 	}
 

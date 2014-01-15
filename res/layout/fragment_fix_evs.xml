@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Black" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/renameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="22dp"
+            android:background="@color/White"
+            android:drawableLeft="@drawable/ic_launcher"
+            android:paddingBottom="6dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="6dp" />
+
+        <LinearLayout
+            android:id="@+id/ev_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/renameButton"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:baselineAligned="false" >
+
+                <RelativeLayout
+                    android:id="@+id/hp_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0.33"
+                    android:background="@color/Red"
+                    android:paddingBottom="3dp" >
+
+                    <TextView
+                        android:id="@+id/hp_evs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/default_ev"
+                        android:textColor="@color/Black" />
+
+                    <TextView
+                        android:id="@+id/hp_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/hp_evs"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/hp"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/hp_label" >
+
+                        <Button
+                            android:id="@+id/minus_hp"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/minus"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/plus_hp"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/plus"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/atk_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0.33"
+                    android:background="@color/Orange"
+                    android:paddingBottom="3dp" >
+
+                    <TextView
+                        android:id="@+id/atk_evs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/default_ev"
+                        android:textColor="@color/Black" />
+
+                    <TextView
+                        android:id="@+id/atk_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/atk_evs"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/atk"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+                    
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/atk_label" >
+
+                        <Button
+                            android:id="@+id/minus_atk"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/minus"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/plus_atk"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/plus"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                    
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/def_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0.33"
+                    android:background="@color/Yellow"
+                    android:paddingBottom="3dp" >
+
+                    <TextView
+                        android:id="@+id/def_evs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/default_ev"
+                        android:textColor="@color/Black" />
+
+                    <TextView
+                        android:id="@+id/def_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/def_evs"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/def"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+                    
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/def_label" >
+
+                        <Button
+                            android:id="@+id/minus_def"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/minus"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/plus_def"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/plus"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                    
+                </RelativeLayout>
+                
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:baselineAligned="false" >
+
+                <RelativeLayout
+                    android:id="@+id/sp_atk_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0.33"
+                    android:background="@color/Light_Blue"
+                    android:paddingBottom="3dp" >
+
+                    <TextView
+                        android:id="@+id/sp_atk_evs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/default_ev"
+                        android:textColor="@color/Black" />
+
+                    <TextView
+                        android:id="@+id/sp_atk_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/sp_atk_evs"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/spatk"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+                    
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/sp_atk_label" >
+
+                        <Button
+                            android:id="@+id/minus_sp_atk"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/minus"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/plus_sp_atk"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/plus"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                    
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/sp_def_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0.33"
+                    android:background="@color/Green"
+                    android:paddingBottom="3dp" >
+
+                    <TextView
+                        android:id="@+id/sp_def_evs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/default_ev"
+                        android:textColor="@color/Black" />
+
+                    <TextView
+                        android:id="@+id/sp_def_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/sp_def_evs"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/spdef"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+                    
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/sp_def_label" >
+
+                        <Button
+                            android:id="@+id/minus_sp_def"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/minus"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/plus_sp_def"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/plus"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                    
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/speed_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0.33"
+                    android:background="@color/Purple"
+                    android:paddingBottom="3dp" >
+
+                    <TextView
+                        android:id="@+id/speed_evs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/default_ev"
+                        android:textColor="@color/Black" />
+
+                    <TextView
+                        android:id="@+id/speed_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/speed_evs"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/speed"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+                    
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/speed_label" >
+
+                        <Button
+                            android:id="@+id/minus_speed"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/minus"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/plus_speed"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/plus"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                    
+                </RelativeLayout>
+                
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/total_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:baselineAligned="false"
+                android:paddingBottom="4dp" >
+
+                <TextView
+                    android:id="@+id/total_evs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/Light_Gray"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/default_total"
+                    android:textColor="@color/Black" />
+
+                <TextView
+                    android:id="@+id/total_ev_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="35dp"
+                    android:layout_toLeftOf="@id/total_evs"
+                    android:text="@string/total_ev"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>

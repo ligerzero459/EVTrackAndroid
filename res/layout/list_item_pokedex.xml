@@ -92,4 +92,8 @@
         android:textColor="@color/White"
         android:visibility="invisible" />
     
+<<<<<<< HEAD
 </RelativeLayout>
+=======
+</RelativeLayout>
+>>>>>>> origin/master

@@ -19,7 +19,6 @@ import com.mingproductions.evtracker.model.GameStore;
 
 public class EVDetailFragment extends SherlockFragment {
 	// TODO: Start working on EV Fix Activity/Fragment/Layout
-	// TODO: Items activity needs to be created
 	// TODO: Rename activity
 	
 	private EVPokemon mPokemon;
@@ -49,13 +48,13 @@ public class EVDetailFragment extends SherlockFragment {
 		
 		// Set logo in title bar
 		if (mPokemon.getPokemonNumber() < 10)
-			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
 		else if (mPokemon.getPokemonNumber() < 100)
-			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
 		else
-			((EVDetailActivity)getActivity()).getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
 	}
 	
@@ -158,8 +157,14 @@ public class EVDetailFragment extends SherlockFragment {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO set onClick to start a fixEvs activity
+				Intent i = new Intent(getActivity(), EVFixActivity.class);
 				
+				Bundle b = new Bundle();
+				b.putInt("mPokemon", mPokemonPos);
+				b.putInt("game", mGamePos);
+				i.putExtras(b);
+				
+				startActivity(i);
 			}
 		});
 		
@@ -189,6 +194,7 @@ public class EVDetailFragment extends SherlockFragment {
 			getActivity().finish();
 			return true;
 		case R.id.menu_item_ev_items:
+		{
 			Intent i = new Intent(getActivity(), EVItemsActivity.class);
 
 			Bundle b = new Bundle();
@@ -198,6 +204,12 @@ public class EVDetailFragment extends SherlockFragment {
 			
 			startActivity(i);
 			return true;
+		}
+		case R.id.menu_item_pokedex:
+		{
+			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
+			startActivity(i);
+		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
