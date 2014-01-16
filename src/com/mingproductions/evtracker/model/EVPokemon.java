@@ -108,7 +108,23 @@ public class EVPokemon {
 	}
 	
 	public EVPokemon(EVPokemon pokemonAtIndex) {
-		// TODO Generate constructor
+		setPokemonNumber(pokemonAtIndex.getPokemonNumber());
+		setPokemonName(pokemonAtIndex.getPokemonName());
+		setLevel(pokemonAtIndex.getLevel());
+		setHp(pokemonAtIndex.getHp());
+		setAtk(pokemonAtIndex.getAtk());
+		setDef(pokemonAtIndex.getDef());
+		setSpAtk(pokemonAtIndex.getSpAtk());
+		setSpDef(pokemonAtIndex.getSpDef());
+		setSpeed(pokemonAtIndex.getSpeed());
+		setPKRS(pokemonAtIndex.isPKRS());
+		setMachoBrace(pokemonAtIndex.isMachoBrace());
+		setPowerWeight(pokemonAtIndex.isPowerWeight());
+		setPowerBracer(pokemonAtIndex.isPowerBracer());
+		setPowerBelt(pokemonAtIndex.isPowerBelt());
+		setPowerLens(pokemonAtIndex.isPowerLens());
+		setPowerBand(pokemonAtIndex.isPowerBand());
+		setPowerAnklet(pokemonAtIndex.isPowerAnklet());
 	}
 
 	/**

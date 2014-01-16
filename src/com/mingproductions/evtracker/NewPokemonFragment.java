@@ -28,7 +28,6 @@ import com.mingproductions.evtracker.model.GameStore;
 import com.mingproductions.evtracker.model.PokedexStore;
 
 public class NewPokemonFragment extends SherlockListFragment {
-	// TODO: Implement search bar
 
 	private ArrayList<EVPokemon> mAllPokemon;
 	private int mGamePos;

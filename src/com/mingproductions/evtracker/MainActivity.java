@@ -12,11 +12,12 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.mingproductions.evtracker.model.FragmentStorage;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
-	// TODO: Implement OnBackButtonPressed
 	
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
 	
+    // TODO: Social/Other tab
+    // TODO: Ads
 	private String[] tabs = { "Tracker", "Pokedex" };
 	
 	@Override

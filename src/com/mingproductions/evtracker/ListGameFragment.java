@@ -32,7 +32,6 @@ import com.mingproductions.evtracker.model.PokedexStore;
 import com.mingproductions.evtracker.model.PokemonGame;
 
 public class ListGameFragment extends SherlockListFragment {
-	// TODO: Social tab
 
 	public static final String EXTRA_GAME_POSITION = "com.mingproductions.evtracker.game_position";
 
@@ -84,7 +83,6 @@ public class ListGameFragment extends SherlockListFragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO: Examine difference between add and replace for FragmentTransaction
 				getFragmentManager().beginTransaction().replace(R.id.host_view, new NewGameFragment()).addToBackStack(null).commit();
 			}
 		});

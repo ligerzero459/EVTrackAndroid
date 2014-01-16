@@ -20,8 +20,7 @@ import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 
 public class EVDetailFragment extends SherlockFragment {
-	// TODO: Start working on EV Fix Activity/Fragment/Layout
-	// TODO: Rename activity
+	// TODO: Create fragment to rename pokemon
 	
 	private EVPokemon mPokemon;
 	private int mGamePos;
