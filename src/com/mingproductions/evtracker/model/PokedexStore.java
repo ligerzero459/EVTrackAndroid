@@ -12,11 +12,9 @@ public class PokedexStore {
 	private ArrayList<EVPokemon> allPokemon;
 	
 	private static PokedexStore sharedStore;
-	private Context mAppContext;
 	
 	private PokedexStore(Context appContext)
 	{
-		mAppContext = appContext;
 		allPokemon = new ArrayList<EVPokemon>();
 	}
 	

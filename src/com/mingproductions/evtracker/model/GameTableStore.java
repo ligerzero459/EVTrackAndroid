@@ -12,11 +12,9 @@ public class GameTableStore {
 	private ArrayList<PokemonGame> allGames;
 	
 	private static GameTableStore sharedStore;
-	private Context mAppContext;
 
 	private GameTableStore(Context appContext)
 	{
-		mAppContext = appContext;
 		allGames = new ArrayList<PokemonGame>();
 	}
 	

@@ -10,12 +10,10 @@ public class FragmentStorage {
 	private ArrayList<Fragment> allFragmentsList;
 	
 	private static FragmentStorage sharedStore;
-	private Context mAppContext;
 	private boolean mTabChanged;
 	
 	public FragmentStorage(Context appContext)
 	{
-		mAppContext = appContext;
 		allFragmentsList = new ArrayList<Fragment>();
 		mTabChanged = false;
 	}

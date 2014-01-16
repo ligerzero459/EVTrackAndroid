@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -65,18 +64,12 @@ public class ListGameFragment extends SherlockListFragment {
 		getSherlockActivity().getSupportActionBar().setTitle("EV Tracker");
 		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		
-		if (FragmentStorage.sharedStore(getActivity()).allFragmentsList() != null && 
-				FragmentStorage.sharedStore(getActivity()).wasTabChanged())
+		if (FragmentStorage.sharedStore(getActivity()).allFragmentsList() != null)
 		{
 			for (Fragment f : FragmentStorage.sharedStore(getActivity()).allFragmentsList())
 			{
 				getFragmentManager().beginTransaction().replace(R.id.host_view, f).addToBackStack(null).commit();
 			}
-			FragmentStorage.sharedStore(getActivity()).setTabChanged(false);
-		}
-		else if (!FragmentStorage.sharedStore(getActivity()).wasTabChanged())
-		{
-			FragmentStorage.sharedStore(getActivity()).clearFragmentList();
 		}
 	}
 

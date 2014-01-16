@@ -1,7 +1,5 @@
 package com.mingproductions.evtracker;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
