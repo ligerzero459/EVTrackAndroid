@@ -63,12 +63,18 @@ public class ListGameFragment extends SherlockListFragment {
 		getSherlockActivity().getSupportActionBar().setTitle("EV Tracker");
 		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		
-		if (FragmentStorage.sharedStore(getActivity()).allFragmentsList() != null)
+		if (FragmentStorage.sharedStore(getActivity()).allFragmentsList() != null &&
+				FragmentStorage.sharedStore(getActivity()).wasTabChanged())
 		{
 			for (Fragment f : FragmentStorage.sharedStore(getActivity()).allFragmentsList())
 			{
 				getFragmentManager().beginTransaction().replace(R.id.host_view, f).addToBackStack(null).commit();
 			}
+			FragmentStorage.sharedStore(getActivity()).setTabChanged(false);
+		}
+		else if (!FragmentStorage.sharedStore(getActivity()).wasTabChanged())
+		{
+			FragmentStorage.sharedStore(getActivity()).clearFragmentList();
 		}
 	}
 

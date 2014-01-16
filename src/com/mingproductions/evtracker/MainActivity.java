@@ -35,8 +35,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
  
         // Adding Tabs
         for (String tab_name : tabs) {
-            actionBar.addTab(actionBar.newTab().setText(tab_name)
-                    .setTabListener(this));
+            actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
         }
 	}
 	
@@ -91,11 +90,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	@Override
 	public void onBackPressed()
 	{
-		super.onBackPressed();
 		int lastFragmentIndex = FragmentStorage.sharedStore(this).indexOfLastFragment();
 		Fragment removeF = FragmentStorage.sharedStore(this).getFragmentAtIndex(lastFragmentIndex);
 		
 		FragmentStorage.sharedStore(this).removeFragmentFromList(removeF);
+		super.onBackPressed();
 	}
 
 }
