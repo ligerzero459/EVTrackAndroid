@@ -3,10 +3,8 @@ package com.mingproductions.evtracker;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +23,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mingproductions.evtracker.model.EVPokemon;
+import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 import com.mingproductions.evtracker.model.PokedexStore;
 
@@ -40,20 +40,19 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 
 		mGamePos = getArguments().getInt("game");
 		mPokemonPos = getArguments().getInt("mPokemon");
 
 		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
 		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
-
+		
 		adapter = new BattledAdapter(mPokedex);
 		setListAdapter(adapter);
-
-		if (NavUtils.getParentActivityName(getActivity()) != null)
-		{
-			((EVBattledPokemonActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		
+		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
 	}
 	
 	@Override
@@ -61,6 +60,8 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 	{
 		super.onResume();
 		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
+		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSherlockActivity().getSupportActionBar().setTitle("Battled Pokemon");
 		adapter.notifyDataSetChanged();
 	}
 
@@ -98,8 +99,9 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		mPokemon.addPokemon(selectedP);
 
 		GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).replacePokemon(mPokemonPos, mPokemon);
-
-		getActivity().finish();
+		
+		FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+		getFragmentManager().popBackStackImmediate();
 	}
 
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -114,17 +116,9 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			if (NavUtils.getParentActivityName(getActivity()) != null)
-			{
-				NavUtils.navigateUpFromSameTask(getActivity());
-			}
+			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+			getFragmentManager().popBackStackImmediate();
 			return true;
-		case R.id.menu_item_pokedex:
-		{
-			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
-			startActivity(i);
-			return true;
-		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -142,7 +136,7 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		return fragment;
 	}
 
-	private class BattledAdapter extends ArrayAdapter<EVPokemon>
+	private class BattledAdapter extends ArrayAdapter<EVPokemon> implements Filterable
 	{
 		public ArrayList<EVPokemon> original;
 		public ArrayList<EVPokemon> filtered;
@@ -150,6 +144,8 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		public BattledAdapter(ArrayList<EVPokemon> pokedex)
 		{
 			super(getActivity(), 0, pokedex);
+			original = new ArrayList<EVPokemon>(pokedex);
+			filtered = new ArrayList<EVPokemon>(pokedex);
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent)

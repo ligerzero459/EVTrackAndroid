@@ -107,6 +107,10 @@ public class EVPokemon {
 		setPowerAnklet(json.getBoolean(JSON_POWER_ANKLET));
 	}
 	
+	public EVPokemon(EVPokemon pokemonAtIndex) {
+		// TODO Generate constructor
+	}
+
 	/**
 	* Adding EV Values
 	*/

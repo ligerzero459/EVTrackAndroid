@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">EVTracker</string>
+    <string name="app_name">EV Tracker</string>
     
     <string name="list_pokemon_name">Pokemon</string>
     <string name="pokemon_image">Pokemon Image</string>

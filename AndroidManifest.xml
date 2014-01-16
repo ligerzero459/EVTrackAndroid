@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mingproductions.evtracker"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0">
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -22,50 +22,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        
-        <activity
-            android:name=".ListGameActivity"
-            android:label="@string/games_title" >
-        </activity>
-        
-        <activity 
-            android:name=".ListPokemonActivity"
-            android:label="@string/list_pokemon_name">
-        </activity>
-        
-        <activity
-            android:name=".EVDetailActivity"
-            android:label="@string/list_pokemon_name" >
-        </activity>
-        
-        <activity
-            android:name=".EVBattledPokemonActivity"
-            android:label="@string/battled"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        
-        <activity 
-            android:name=".NewGameActivity" 
-            android:label="@string/new_game"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        
-        <activity 
-            android:name=".NewPokemonActivity" 
-            android:label="@string/new_pokemon"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity 
-            android:name=".EVItemsActivity">
-        </activity>
-        <activity
-            android:name=".ListPokedexActivity"
-            android:label="@string/pokedex"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity android:name=".EVFixActivity">
-            
         </activity>
         
     </application>

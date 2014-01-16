@@ -3,16 +3,17 @@ package com.mingproductions.evtracker;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.Fragment;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -27,12 +28,14 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mingproductions.evtracker.model.EVPokemon;
+import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 
 public class ListPokemonFragment extends SherlockListFragment {
 	
 	private ArrayList<EVPokemon> mAllPokemon;
 	private int mGamePos;
+	private PokemonAdapter adapter;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -42,11 +45,10 @@ public class ListPokemonFragment extends SherlockListFragment {
 		mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
 		mAllPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getAllPokemon();
 
-		PokemonAdapter adapter = new PokemonAdapter(mAllPokemon);
+		adapter = new PokemonAdapter(mAllPokemon);
 		setListAdapter(adapter);
 		
 		setHasOptionsMenu(true);
-		setRetainInstance(true);
 
 		// Set the title & image to the correct game
 		getActivity().setTitle(GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getGameName());
@@ -56,18 +58,27 @@ public class ListPokemonFragment extends SherlockListFragment {
 		int imageId = resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
 				+ GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getImageName()
 				, null, null);
-		((ListPokemonActivity)getActivity()).getSupportActionBar().setLogo(imageId);
-		if (NavUtils.getParentActivityName(getActivity()) != null)
-		{
-			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		getSherlockActivity().getSupportActionBar().setLogo(imageId);
+		
+		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+		
 	}
 	
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		
+		// Set the title & image to the correct game
+		getSherlockActivity().getSupportActionBar().setTitle(GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getGameName());
+
+		Resources resource = getResources();
+
+		int imageId = resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
+				+ GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getImageName()
+				, null, null);
+		getSherlockActivity().getSupportActionBar().setLogo(imageId);	
+		// Enable Up button
+		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		((PokemonAdapter)getListAdapter()).notifyDataSetChanged();
 	}
 	
@@ -77,22 +88,33 @@ public class ListPokemonFragment extends SherlockListFragment {
 	{
 		View v = inflater.inflate(R.layout.fragment_pokemon_list, parent, false);
 		
+		final Fragment myself = this;
+		v.setOnKeyListener(new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				if (keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(myself);
+					return true;
+				}
+				return false;
+			}
+		});
+		
 		Button newPokemonButton = (Button)v.findViewById(R.id.new_pokemon_button);
 		newPokemonButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getActivity(), NewPokemonActivity.class);
-				
-				Bundle b = new Bundle();
-				b.putInt(ListGameFragment.EXTRA_GAME_POSITION, mGamePos);
-				
-				i.putExtras(b);
-				startActivity(i);
+				getFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
+				.addToBackStack(null).commit();
 			}
 		});
 		
 		ListView listView = (ListView)v.findViewById(android.R.id.list);
+		//listView.setAdapter(adapter);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
 		{
 			registerForContextMenu(listView);
@@ -139,6 +161,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 						}
 						mode.finish();
 						GameStore.sharedStore(getActivity()).saveGames();
+						adapter.notifyDataSetInvalidated();
 						adapter.notifyDataSetChanged();
 						return true;
 					}
@@ -178,6 +201,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 		case R.id.menu_item_delete_pokemon:
 		{
 			GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).removePokemon(pokemon);
+			adapter.notifyDataSetInvalidated();
 			adapter.notifyDataSetChanged();
 			return true;
 		}
@@ -189,14 +213,8 @@ public class ListPokemonFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-		Intent i = new Intent(getActivity(), EVDetailActivity.class);
-		
-		Bundle b = new Bundle();
-		b.putInt("pokemon", position);
-		b.putInt("game", mGamePos);
-		i.putExtras(b);
-		
-		startActivity(i);
+		Fragment evDetailFragment = EVDetailFragment.newInstance(position, mGamePos);
+		getFragmentManager().beginTransaction().replace(R.id.host_view, evDetailFragment).addToBackStack(null).commit();
 	}
 	
 	@Override
@@ -212,32 +230,20 @@ public class ListPokemonFragment extends SherlockListFragment {
 		switch(item.getItemId())
 		{
 		case android.R.id.home:
-			if (NavUtils.getParentActivityName(getSherlockActivity()) != null)
-			{
-				NavUtils.navigateUpFromSameTask(getSherlockActivity());
-			}
+			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+			getFragmentManager().popBackStackImmediate();
 			return true;
 		case R.id.menu_item_new_pokemon:
 		{
-			Intent i = new Intent(getActivity(), NewPokemonActivity.class);
-			
-			Bundle b = new Bundle();
-			b.putInt(ListGameFragment.EXTRA_GAME_POSITION, mGamePos);
-			
-			i.putExtras(b);
-			startActivity(i);
+			getFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
+								.addToBackStack(null).commit();
 			return true;
-		}
-		case R.id.menu_item_pokedex:
-		{
-			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
-			startActivity(i);
 		}
 		default:
 			return false;
 		}
 	}
-	
+		
 	private class PokemonAdapter extends ArrayAdapter<EVPokemon>
 	{
 		public PokemonAdapter(ArrayList<EVPokemon> allPokemon)

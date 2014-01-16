@@ -2,15 +2,19 @@ package com.mingproductions.evtracker;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.MenuItem;
 import com.mingproductions.evtracker.model.EVPokemon;
+import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 
 public class EVFixFragment extends SherlockFragment {
@@ -24,7 +28,6 @@ public class EVFixFragment extends SherlockFragment {
 	{
 		super.onCreate(savedInstanceBundle);
 		setHasOptionsMenu(true);
-		setRetainInstance(true);
 		
 		mGamePos = getArguments().getInt("game");
 		mPokemonPos = getArguments().getInt("mPokemon");
@@ -34,11 +37,6 @@ public class EVFixFragment extends SherlockFragment {
 		 * finds a specific Pokemon in that game
 		 */
 		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
-		
-		if (NavUtils.getParentActivityName(getActivity()) != null)
-		{
-			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
 		
 		// Set logo in title bar
 		if (mPokemon.getPokemonNumber() < 10)
@@ -50,6 +48,9 @@ public class EVFixFragment extends SherlockFragment {
 		else
 			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
+
+		getSherlockActivity().getSupportActionBar().setTitle(mPokemon.getPokemonName());
+		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
 	}
 	
 	@Override
@@ -57,6 +58,7 @@ public class EVFixFragment extends SherlockFragment {
 	{
 		super.onResume();
 		GameStore.sharedStore(getActivity()).saveGames();
+		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		TextView hp = (TextView)getView().findViewById(R.id.hp_evs);
 		hp.setText(mPokemon.getHp() + "/255");
@@ -78,6 +80,19 @@ public class EVFixFragment extends SherlockFragment {
 		
 		TextView total = (TextView)getView().findViewById(R.id.total_evs);
 		total.setText(mPokemon.getTotal() + "/510");
+
+		// Set logo in title bar
+		if (mPokemon.getPokemonNumber() < 10)
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
+		else if (mPokemon.getPokemonNumber() < 100)
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
+		else
+			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
+
+		getSherlockActivity().getSupportActionBar().setTitle(mPokemon.getPokemonName());
 	}
 	
 	@Override
@@ -115,6 +130,22 @@ public class EVFixFragment extends SherlockFragment {
 	public View onCreateView (LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.fragment_fix_evs, parent, false);
+		
+		final Fragment myself = this;
+		OnKeyListener pressed = new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				if (keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(myself);
+					return true;
+				}
+				return false;
+			}
+		};
+		v.setOnKeyListener(pressed);
 		
 		Button renameButton = (Button)v.findViewById(R.id.renameButton);
 		renameButton.setText(mPokemon.getPokemonName());
@@ -300,6 +331,20 @@ public class EVFixFragment extends SherlockFragment {
 		});
 		
 		return v;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch(item.getItemId())
+		{
+		case android.R.id.home:
+			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+			getFragmentManager().popBackStackImmediate();
+			return true;
+		default:
+			return false;
+		}
 	}
 	
 	public static EVFixFragment newInstance(int position, int game)

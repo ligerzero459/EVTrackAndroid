@@ -5,12 +5,14 @@ import java.util.Locale;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnKeyListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -24,9 +26,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mingproductions.evtracker.model.EVPokemon;
+import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 import com.mingproductions.evtracker.model.PokedexStore;
-import com.mingproductions.evtracker.model.PokemonGame;
 
 public class NewPokemonFragment extends SherlockListFragment {
 	// TODO: Implement search bar
@@ -44,15 +46,13 @@ public class NewPokemonFragment extends SherlockListFragment {
 		mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
 		mAllPokemon = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
 
-		if (NavUtils.getParentActivityName(getActivity()) != null)
-		{
-			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-
 		adapter = new PokemonAdapter(mAllPokemon);
 		setListAdapter(adapter);
-
+		
+		setHasOptionsMenu(true);
 		setRetainInstance(true);
+		
+		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
 	}
 	
 	@Override
@@ -60,6 +60,8 @@ public class NewPokemonFragment extends SherlockListFragment {
 	{
 		super.onResume();
 		mAllPokemon = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
+		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSherlockActivity().getSupportActionBar().setTitle("New Pokemon");
 		adapter.notifyDataSetChanged();
 	}
 
@@ -97,16 +99,11 @@ public class NewPokemonFragment extends SherlockListFragment {
 		EVPokemon newPokemon = new EVPokemon(mAllPokemon.get(selectedIndex).getPokemonNumber(), 
 				mAllPokemon.get(selectedIndex).getPokemonName());
 
-		/**
-		 * This super long line gets the GameStore singleton, gets all the 
-		 * games from the GameStore, get the selected game, then get a
-		 * reference to the mAllPokemon array and then add the newPokemon
-		 * to the game array
-		 **/
 		GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).addPokemon(newPokemon);
 		GameStore.sharedStore(getActivity()).saveGames();
-
-		getActivity().finish();
+		
+		FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+		getFragmentManager().popBackStackImmediate();
 	}
 
 	@Override
@@ -121,10 +118,8 @@ public class NewPokemonFragment extends SherlockListFragment {
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			if (NavUtils.getParentActivityName(getSherlockActivity()) != null)
-			{
-				NavUtils.navigateUpFromSameTask(getSherlockActivity());
-			}
+			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+			getFragmentManager().popBackStackImmediate();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

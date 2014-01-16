@@ -3,10 +3,11 @@ package com.mingproductions.evtracker;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -25,13 +26,13 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 import com.mingproductions.evtracker.model.GameTableStore;
 import com.mingproductions.evtracker.model.PokedexStore;
 import com.mingproductions.evtracker.model.PokemonGame;
 
 public class ListGameFragment extends SherlockListFragment {
-	// TODO: Pokedex tab
 	// TODO: Social tab
 
 	public static final String EXTRA_GAME_POSITION = "com.mingproductions.evtracker.game_position";
@@ -60,6 +61,23 @@ public class ListGameFragment extends SherlockListFragment {
 	{
 		super.onResume();
 		((GameAdapter)getListAdapter()).notifyDataSetChanged();
+		getSherlockActivity().getSupportActionBar().setLogo(R.drawable.ic_launcher);
+		getSherlockActivity().getSupportActionBar().setTitle("EV Tracker");
+		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		
+		if (FragmentStorage.sharedStore(getActivity()).allFragmentsList() != null && 
+				FragmentStorage.sharedStore(getActivity()).wasTabChanged())
+		{
+			for (Fragment f : FragmentStorage.sharedStore(getActivity()).allFragmentsList())
+			{
+				getFragmentManager().beginTransaction().replace(R.id.host_view, f).addToBackStack(null).commit();
+			}
+			FragmentStorage.sharedStore(getActivity()).setTabChanged(false);
+		}
+		else if (!FragmentStorage.sharedStore(getActivity()).wasTabChanged())
+		{
+			FragmentStorage.sharedStore(getActivity()).clearFragmentList();
+		}
 	}
 
 	@SuppressLint("NewApi")
@@ -73,8 +91,8 @@ public class ListGameFragment extends SherlockListFragment {
 
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getActivity(), NewGameActivity.class);
-				startActivity(i);
+				// TODO: Examine difference between add and replace for FragmentTransaction
+				getFragmentManager().beginTransaction().replace(R.id.host_view, new NewGameFragment()).addToBackStack(null).commit();
 			}
 		});
 
@@ -176,14 +194,8 @@ public class ListGameFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-		// Starting Activity
-		Intent i = new Intent(getActivity(), ListPokemonActivity.class);
-
-		Bundle b = new Bundle();
-		b.putInt(EXTRA_GAME_POSITION, position);
-
-		i.putExtras(b);
-		startActivity(i);
+		getFragmentManager().beginTransaction().replace(R.id.host_view, ListPokemonFragment.newInstance(position))
+							.addToBackStack(null).commit();
 	}
 
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -199,14 +211,8 @@ public class ListGameFragment extends SherlockListFragment {
 		{
 		case R.id.menu_item_new_game:
 		{
-			Intent i = new Intent(getActivity(), NewGameActivity.class);
-			startActivity(i);
-			return true;
-		}
-		case R.id.menu_item_pokedex:
-		{
-			Intent i = new Intent(getActivity(), ListPokedexActivity.class);
-			startActivity(i);
+			getFragmentManager().beginTransaction().replace(R.id.host_view, new NewGameFragment())
+								.addToBackStack(null).commit();
 			return true;
 		}
 		default:

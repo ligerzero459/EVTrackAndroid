@@ -4,10 +4,6 @@
         android:icon="@android:drawable/ic_menu_delete" 
         android:title="@string/delete_pokemon"
         android:showAsAction="ifRoom|withText" />
-    <item android:id="@+id/menu_item_pokedex"
-        android:title="@string/pokedex"
-        android:icon="@drawable/pokedex_icon"
-        android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/menu_item_ev_items"
         android:title="@string/items"
         android:icon="@drawable/item_icon"

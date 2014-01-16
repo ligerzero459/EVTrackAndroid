@@ -44,6 +44,8 @@ public class ListPokedexFragment extends SherlockListFragment {
 	{
 		super.onResume();
 		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
+		getSherlockActivity().getSupportActionBar().setTitle("Pokedex");
+		getSherlockActivity().getSupportActionBar().setIcon(R.drawable.ic_launcher);
 		adapter.notifyDataSetChanged();
 	}
 

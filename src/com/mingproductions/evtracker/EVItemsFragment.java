@@ -1,17 +1,21 @@
 package com.mingproductions.evtracker;
 
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.MenuItem;
 import com.mingproductions.evtracker.model.EVPokemon;
+import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 
 public class EVItemsFragment extends SherlockFragment {
@@ -24,6 +28,7 @@ public class EVItemsFragment extends SherlockFragment {
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 
 		mGamePos = getArguments().getInt("game");
 		mPokemonPos = getArguments().getInt("mPokemon");
@@ -33,11 +38,6 @@ public class EVItemsFragment extends SherlockFragment {
 		 * finds a specific Pokemon in that game
 		 */
 		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
-
-		if (NavUtils.getParentActivityName(getActivity()) != null)
-		{
-			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
 
 		// Set logo in title bar
 		if (mPokemon.getPokemonNumber() < 10)
@@ -52,12 +52,36 @@ public class EVItemsFragment extends SherlockFragment {
 		
 		// Set title in bar
 		getSherlockActivity().getSupportActionBar().setTitle("EV Items");
+		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.fragment_ev_items, parent, false);
+		
+		final Fragment myself = this;
+		OnKeyListener pressed = new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				if (keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(myself);
+					return true;
+				}
+				return false;
+			}
+		};
+		v.setOnKeyListener(pressed);
 
 		final ToggleButton PKRS = (ToggleButton)v.findViewById(R.id.pkrs_button);
 		PKRS.setChecked(mPokemon.isPKRS());
@@ -322,6 +346,20 @@ public class EVItemsFragment extends SherlockFragment {
 	{
 		super.onPause();
 		GameStore.sharedStore(getActivity()).saveGames();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch(item.getItemId())
+		{
+		case android.R.id.home:
+			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+			getFragmentManager().popBackStackImmediate();
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	public static EVItemsFragment newInstance(int position, int game)

@@ -5,11 +5,13 @@ import java.util.Locale;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.MenuItem;
+import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 import com.mingproductions.evtracker.model.GameTableStore;
 import com.mingproductions.evtracker.model.PokemonGame;
@@ -33,30 +36,45 @@ public class NewGameFragment extends SherlockListFragment {
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
-		setRetainInstance(true);
 
 		mAllGames = new ArrayList<PokemonGame>(GameTableStore.sharedStore(getActivity()).allGames());
 
 		adapter = new GameAdapter(mAllGames);
 		setListAdapter(adapter);
-
-		if (NavUtils.getParentActivityName(getActivity()) != null)
-		{
-			((NewGameActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		
+		setHasOptionsMenu(true);
+		
+		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
 	}
 	
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		//mAllGames = new ArrayList<PokemonGame>(GameTableStore.sharedStore(getActivity()).allGames());
+		getSherlockActivity().getSupportActionBar().setTitle("New Game");
+		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		adapter.notifyDataSetChanged();
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.fragment_search_list, parent, false);
+		
+		final Fragment myself = this;
+		OnKeyListener pressed = new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				if (keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(myself);
+					return true;
+				}
+				return false;
+			}
+		};
+		v.setOnKeyListener(pressed);
 
 		EditText searchBox = (EditText)v.findViewById(R.id.inputSearch);
 		searchBox.addTextChangedListener(new TextWatcher() {
@@ -89,7 +107,7 @@ public class NewGameFragment extends SherlockListFragment {
 		GameStore.sharedStore(getActivity()).addGame(newGame);
 		GameStore.sharedStore(getActivity()).saveGames();
 
-		getActivity().finish();
+		getFragmentManager().popBackStackImmediate();
 	}
 
 	@Override
@@ -98,10 +116,8 @@ public class NewGameFragment extends SherlockListFragment {
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			if (NavUtils.getParentActivityName(getActivity()) != null)
-			{
-				NavUtils.navigateUpFromSameTask(getActivity());
-			}
+			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+			getFragmentManager().popBackStackImmediate();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
