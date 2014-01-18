@@ -7,6 +7,6 @@
     <item android:id="@+id/menu_item_ev_items"
         android:title="@string/items"
         android:icon="@drawable/item_icon"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom|withText" />
 
 </menu>

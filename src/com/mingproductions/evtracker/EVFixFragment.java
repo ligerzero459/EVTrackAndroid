@@ -147,7 +147,7 @@ public class EVFixFragment extends SherlockFragment {
 		};
 		v.setOnKeyListener(pressed);
 		
-		Button renameButton = (Button)v.findViewById(R.id.renameButton);
+		Button renameButton = (Button)v.findViewById(R.id.rename_box);
 		renameButton.setText(mPokemon.getPokemonName());
 		
 		Drawable image = null;

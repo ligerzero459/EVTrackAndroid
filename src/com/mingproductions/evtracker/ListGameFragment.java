@@ -3,7 +3,6 @@ package com.mingproductions.evtracker;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,16 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.mingproductions.evtracker.adapter.GameAdapter;
 import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
 import com.mingproductions.evtracker.model.GameTableStore;
@@ -50,7 +47,7 @@ public class ListGameFragment extends SherlockListFragment {
 
 		mAllGames = GameStore.sharedStore(getActivity()).allGames();
 
-		GameAdapter adapter = new GameAdapter(mAllGames);
+		GameAdapter adapter = new GameAdapter(mAllGames, getActivity());
 		setListAdapter(adapter);
 	}
 
@@ -214,35 +211,6 @@ public class ListGameFragment extends SherlockListFragment {
 		}
 		default:
 			return false;
-		}
-	}
-
-	private class GameAdapter extends ArrayAdapter<PokemonGame>
-	{
-		public GameAdapter(ArrayList<PokemonGame> allGames)
-		{
-			super(getActivity(), 0, allGames);
-
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			if (convertView == null)
-			{
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_game, null);
-			}
-
-			PokemonGame game = getItem(position);
-			Resources resource = getResources();
-
-			ImageView gameImage = (ImageView)convertView.findViewById(R.id.game_image);
-			gameImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
-					+ game.getImageName(), null, null));
-
-			TextView gameNameText = (TextView)convertView.findViewById(R.id.game_name);
-			gameNameText.setText(game.getGameName());
-
-			return convertView;
 		}
 	}
 }

@@ -23,6 +23,7 @@ public class PListParsing {
 	public static void PopulatePokedex(AssetManager mgr, Context c) throws IOException, NullPointerException
 	{
 		InputStream is = null;
+		int pokemonNumber = 0;
 		try
 		{
 			is = mgr.open("PokemonList.plist");
@@ -33,7 +34,7 @@ public class PListParsing {
 			{
 				NSDictionary pokemonDict = (NSDictionary)param;
 				
-				int pokemonNumber = ((NSNumber)pokemonDict.objectForKey("Num")).intValue();
+				pokemonNumber = ((NSNumber)pokemonDict.objectForKey("Num")).intValue();
 				String pokemonName = ((NSString)pokemonDict.objectForKey("Name")).toString();
 				int hp = ((NSNumber)pokemonDict.objectForKey("HP")).intValue();
 				int atk = ((NSNumber)pokemonDict.objectForKey("Atk")).intValue();
@@ -49,6 +50,7 @@ public class PListParsing {
 		}
 		catch(Exception ex)
 		{
+			Log.e("PopulatePokedex", "Unable to read object: " + Integer.toString(pokemonNumber));
 			Log.e("PopulatePokedex", "Unable to populate pokedex", ex);
 		}
 		finally

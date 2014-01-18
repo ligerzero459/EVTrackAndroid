@@ -2,13 +2,13 @@ package com.mingproductions.evtracker;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.bugsense.trace.BugSenseHandler;
+import com.mingproductions.evtracker.adapter.TabsPagerAdapter;
 import com.mingproductions.evtracker.model.FragmentStorage;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
@@ -16,14 +16,13 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
 	
-    // TODO: Social/Other tab
-    // TODO: Ads
-	private String[] tabs = { "Tracker", "Pokedex" };
+	private String[] tabs = { "Tracker", "Pokedex", "Social" };
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		BugSenseHandler.initAndStartSession(this, "25efee78");
 		setContentView(R.layout.activity_main_2);
 		
 		 // Initialization
@@ -39,32 +38,20 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         }
 	}
 	
-	public class TabsPagerAdapter extends FragmentPagerAdapter
+	@Override
+	public void onResume()
 	{
-		public TabsPagerAdapter(FragmentManager fm)
-		{
-			super(fm);
-		}
-
-		@Override
-		public Fragment getItem(int index) {
-			switch (index)
-			{
-			case 0:
-				return new ListGameFragment();
-			case 1:
-				return new ListPokedexFragment();
-			}
-			
-			return null;
-		}
-
-		@Override
-		public int getCount() {
-			return 2;
-		}
+		super.onResume();
+		BugSenseHandler.startSession(this);
 	}
-
+	
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		BugSenseHandler.closeSession(this);
+	}
+	
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		ft.replace(R.id.host_view, mAdapter.getItem(tab.getPosition()));
@@ -90,10 +77,16 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	@Override
 	public void onBackPressed()
 	{
-		int lastFragmentIndex = FragmentStorage.sharedStore(this).indexOfLastFragment();
-		Fragment removeF = FragmentStorage.sharedStore(this).getFragmentAtIndex(lastFragmentIndex);
-		
-		FragmentStorage.sharedStore(this).removeFragmentFromList(removeF);
+		if (getSupportActionBar().getSelectedTab().getPosition() == 0)
+		{
+			int lastFragmentIndex = FragmentStorage.sharedStore(this).indexOfLastFragment();
+			if (lastFragmentIndex > 0)
+			{
+				Fragment removeF = FragmentStorage.sharedStore(this).getFragmentAtIndex(lastFragmentIndex);
+
+				FragmentStorage.sharedStore(this).removeFragmentFromList(removeF);
+			}
+		}
 		super.onBackPressed();
 	}
 

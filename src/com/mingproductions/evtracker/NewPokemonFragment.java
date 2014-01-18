@@ -1,27 +1,24 @@
 package com.mingproductions.evtracker;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.mingproductions.evtracker.adapter.PokemonAdapter;
+import com.mingproductions.evtracker.listener.EVAdListener;
 import com.mingproductions.evtracker.model.EVPokemon;
 import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
@@ -33,6 +30,8 @@ public class NewPokemonFragment extends SherlockListFragment {
 	private int mGamePos;
 	
 	private PokemonAdapter adapter;
+	private AdView adView;
+	private AdRequest request;
 
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
@@ -42,13 +41,19 @@ public class NewPokemonFragment extends SherlockListFragment {
 		mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
 		mAllPokemon = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
 
-		adapter = new PokemonAdapter(mAllPokemon);
+		adapter = new PokemonAdapter(mAllPokemon, getActivity());
 		setListAdapter(adapter);
 		
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
 		
 		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+	}
+	
+	@Override
+	public void onStart()
+	{
+		super.onStart();
 	}
 	
 	@Override
@@ -84,10 +89,29 @@ public class NewPokemonFragment extends SherlockListFragment {
 				// Required, but not used
 			}
 		});
-
+		
+		request = new AdRequest.Builder().addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB").build();
+		adView  = (AdView) v.findViewById(R.id.adView);
+		adView.setAdListener(new EVAdListener(adView));
+		adView.loadAd(request);
+		
 		return v;
 	}
-
+	
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		adView.pause();
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		adView.destroy();
+	}
+	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
@@ -121,97 +145,7 @@ public class NewPokemonFragment extends SherlockListFragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	private class PokemonAdapter extends ArrayAdapter<EVPokemon> implements Filterable
-	{
-		public ArrayList<EVPokemon> original;
-		public ArrayList<EVPokemon> filtered;
-
-		public PokemonAdapter(ArrayList<EVPokemon> allPokemon)
-		{			
-			super(getActivity(), 0, allPokemon);
-			original = new ArrayList<EVPokemon>(allPokemon);
-			filtered = new ArrayList<EVPokemon>(allPokemon);
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			if (convertView == null)
-			{
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_pokemon, null);
-			}
-
-			Resources resource = getResources();
-			EVPokemon p = getItem(position);
-
-			ImageView pokemonImage = (ImageView)convertView.findViewById(R.id.pokemon_image);
-			if (p.getPokemonNumber() < 10)
-				pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p00" + p.getPokemonNumber(), null, null));
-			else if (p.getPokemonNumber() < 100)
-				pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p0" + p.getPokemonNumber(), null, null));
-			else
-				pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p" + p.getPokemonNumber(), null, null));
-
-			TextView pokemonName = (TextView)convertView.findViewById(R.id.pokemon_name);
-			pokemonName.setText("#" + p.getPokemonNumber() + " " + p.getPokemonName());
-
-			return convertView;
-		}
-
-		Filter filter = new Filter() {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			protected void publishResults(CharSequence constraint, FilterResults results) {
-				filtered = (ArrayList<EVPokemon>)results.values;
-				notifyDataSetChanged();
-				clear();
-				for (EVPokemon p : filtered)
-				{
-					add(p);
-					notifyDataSetInvalidated();
-				}
-			}
-
-			@Override
-			protected FilterResults performFiltering(CharSequence constraint) {
-				FilterResults filterResults = new FilterResults();
-				if(constraint != null && filtered != null)
-				{
-					ArrayList<EVPokemon> tempList = new ArrayList<EVPokemon>();
-					for (EVPokemon p : original)
-					{
-						if (p.getPokemonName().toLowerCase(Locale.US).contains(constraint.toString().toLowerCase(Locale.US)))
-						{
-							tempList.add(p);
-						} 
-						else if (Integer.toString(p.getPokemonNumber()).contains(constraint))
-						{
-							tempList.add(p);
-						}
-					}
-					filterResults.values = tempList;
-					filterResults.count = tempList.size();
-				}
-				else 
-				{
-					ArrayList<EVPokemon> tempList = new ArrayList<EVPokemon>(original);
-					filterResults.values = tempList;
-					filterResults.count = tempList.size();
-				}
-
-				return filterResults;
-			}
-		};
-
-		@Override
-		public Filter getFilter()
-		{
-			return filter;
-		}
-
-	}
-
+	
 	public static NewPokemonFragment newInstance(int position)
 	{
 		Bundle args = new Bundle();
@@ -222,4 +156,5 @@ public class NewPokemonFragment extends SherlockListFragment {
 
 		return fragment;
 	}
+	
 }

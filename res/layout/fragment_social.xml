@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Black" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="47dp"
+        android:text="@string/social_facebook"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/White" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/social_twitter"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/White" />
+
+    <ImageButton
+        android:id="@+id/facebook_button"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="37dp"
+        android:layout_marginLeft="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/facebook_icon"
+        android:contentDescription="@string/facebook" />
+
+    <ImageButton
+        android:id="@+id/twitter_button"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/facebook_button"
+        android:layout_marginRight="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/twitter_icon"
+        android:contentDescription="@string/twitter" />
+
+</RelativeLayout>

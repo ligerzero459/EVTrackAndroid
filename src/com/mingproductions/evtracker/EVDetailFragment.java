@@ -127,7 +127,7 @@ public class EVDetailFragment extends SherlockFragment {
 		};
 		v.setOnKeyListener(pressed);
 		
-		Button renameButton = (Button)v.findViewById(R.id.renameButton);
+		Button renameButton = (Button)v.findViewById(R.id.rename_box);
 		renameButton.setText(mPokemon.getPokemonName());
 		
 		Drawable image = null;
@@ -205,8 +205,9 @@ public class EVDetailFragment extends SherlockFragment {
 			getFragmentManager().popBackStackImmediate();
 			return true;
 		case R.id.menu_item_delete_pokemon:
+			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
+			getFragmentManager().popBackStackImmediate();
 			GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).removePokemon(mPokemon);
-			getActivity().finish();
 			return true;
 		case R.id.menu_item_ev_items:
 		{

@@ -52,7 +52,19 @@
     <string name="zinc">Zinc</string>
     <string name="apply">Apply</string>
     
+    <!-- EV Fix -->
     <string name="plus">+</string>
     <string name="minus">-</string>
+    
+    <!-- Ads -->
+    <string name="ad_unit_id">a152d95264c813e</string>
+    <string name="test_ad_unit">B3EEABB8EE11C2BE770B684D95219ECB</string>
+    
+    <!-- Social -->
+    <string name="social">Social</string>
+    <string name="social_facebook">Like EV Tracker on Facebook</string>
+    <string name="social_twitter">Follow on Twitter</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
 
 </resources>

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -10,12 +13,23 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="Search.."
-        android:inputType="textVisiblePassword" />
+        android:inputType="textVisiblePassword"
+        android:layout_weight="0" />
 
     <!-- List View -->
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+    
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/ad_unit_id"
+        android:visibility="gone" />
 
 </LinearLayout>
