@@ -127,6 +127,8 @@ public class EVDetailFragment extends SherlockFragment {
 		};
 		v.setOnKeyListener(pressed);
 		
+		// TODO: Modify for use with new RelativeLayout in layout
+		// TODO: Look how to retrieve touch events from a layout vs a button (onClickListener?)
 		Button renameButton = (Button)v.findViewById(R.id.rename_box);
 		renameButton.setText(mPokemon.getPokemonName());
 		
