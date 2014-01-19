@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -111,27 +112,11 @@ public class EVDetailFragment extends SherlockFragment {
 	{
 		View v = inflater.inflate(R.layout.fragment_ev_details, parent, false);
 		
-		final Fragment myself = this;
-		OnKeyListener pressed = new View.OnKeyListener() {
-			
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event)
-			{
-				if (keyCode == KeyEvent.KEYCODE_BACK)
-				{
-					FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(myself);
-					return true;
-				}
-				return false;
-			}
-		};
-		v.setOnKeyListener(pressed);
-		
-		// TODO: Modify for use with new RelativeLayout in layout
 		// TODO: Look how to retrieve touch events from a layout vs a button (onClickListener?)
-		Button renameButton = (Button)v.findViewById(R.id.rename_box);
-		renameButton.setText(mPokemon.getPokemonName());
+		TextView pokemonName = (TextView)v.findViewById(R.id.pokemon_name);
+		pokemonName.setText(mPokemon.getPokemonName());
 		
+		ImageView pokemonImage = (ImageView)v.findViewById(R.id.pokemon_image);
 		Drawable image = null;
 		
 		if (mPokemon.getPokemonNumber() < 10)
@@ -143,8 +128,7 @@ public class EVDetailFragment extends SherlockFragment {
 		else
 			image = getResources().getDrawable(getResources()
 					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null));
-		
-		renameButton.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+		pokemonImage.setImageDrawable(image);
 		
 		TextView hp = (TextView)v.findViewById(R.id.hp_evs);
 		hp.setText(mPokemon.getHp() + "/255");
