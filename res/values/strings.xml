@@ -22,6 +22,8 @@
     <string name="default_total">0/510</string>
     <string name="total_ev">Total EV\'s</string>
     
+    <string name="recent_battles">Times Battled</string>
+    
     <string name="battled">Battled Pokemon</string>
     <string name="new_game">New Game</string>
     <string name="new_pokemon">New Pokemon</string>

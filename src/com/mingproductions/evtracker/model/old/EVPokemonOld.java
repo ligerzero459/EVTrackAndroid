@@ -1,12 +1,9 @@
-package com.mingproductions.evtracker.model;
+package com.mingproductions.evtracker.model.old;
 
-import java.util.ArrayList;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EVPokemon {
+public class EVPokemonOld {
 	/**
 	 * Static Variables
 	 */
@@ -27,7 +24,6 @@ public class EVPokemon {
 	private static final String JSON_POWER_LENS = "lens";
 	private static final String JSON_POWER_BAND = "band";
 	private static final String JSON_POWER_ANKLET = "anklet";
-	private static final String JSON_BATTLED = "battled";
 	
 	/**
 	 * Member Variables
@@ -49,26 +45,25 @@ public class EVPokemon {
 	private Boolean mPowerLens;
 	private Boolean mPowerBand;
 	private Boolean mPowerAnklet;
-	private ArrayList<BattledPokemon> mRecentBattled;
 	
 	/**
 	*  Constructors
 	*/
 	
-	public EVPokemon()
+	public EVPokemonOld()
 	{
 		// Default Constructor
 		this(1, "Pokemon");
 	}
 	
-	public EVPokemon(int pokemonNumber, String pokemonName)
+	public EVPokemonOld(int pokemonNumber, String pokemonName)
 	{
 		/** Standard Constructor
 		 	Used for adding Pokemon at runtime*/
 		this(pokemonNumber, pokemonName, 1, 0, 0, 0, 0, 0, 0);
 	}
 	
-	public EVPokemon(int pokemonNumber, String pokemonName,  int level, int hp, int atk, int def, int spAtk, int spDef, 
+	public EVPokemonOld(int pokemonNumber, String pokemonName,  int level, int hp, int atk, int def, int spAtk, int spDef, 
 			int speed) {
 		/** Specialized Constructor
 		 	Only to be called through "Standard" or when adding entries
@@ -90,10 +85,9 @@ public class EVPokemon {
 		setPowerLens(false);
 		setPowerBand(false);
 		setPowerAnklet(false);
-		setRecentBattled(new ArrayList<BattledPokemon>());
 	}
 	
-	public EVPokemon(JSONObject json) throws JSONException {
+	public EVPokemonOld(JSONObject json) throws JSONException {
 		setPokemonNumber(json.getInt(JSON_POKEMON_NUMBER));
 		setPokemonName(json.getString(JSON_POKEMON_NAME));
 		setLevel(json.getInt(JSON_LEVEL));
@@ -111,15 +105,9 @@ public class EVPokemon {
 		setPowerLens(json.getBoolean(JSON_POWER_LENS));
 		setPowerBand(json.getBoolean(JSON_POWER_BAND));
 		setPowerAnklet(json.getBoolean(JSON_POWER_ANKLET));
-		setRecentBattled(new ArrayList<BattledPokemon>());
-		
-		JSONArray array = json.getJSONArray(JSON_BATTLED);
-		for (int i = 0; i < array.length(); i++) {
-			mRecentBattled.add(new BattledPokemon(array.getJSONObject(i)));
-		}
 	}
 	
-	public EVPokemon(EVPokemon pokemonAtIndex) {
+	public EVPokemonOld(EVPokemonOld pokemonAtIndex) {
 		setPokemonNumber(pokemonAtIndex.getPokemonNumber());
 		setPokemonName(pokemonAtIndex.getPokemonName());
 		setLevel(pokemonAtIndex.getLevel());
@@ -137,7 +125,6 @@ public class EVPokemon {
 		setPowerLens(pokemonAtIndex.isPowerLens());
 		setPowerBand(pokemonAtIndex.isPowerBand());
 		setPowerAnklet(pokemonAtIndex.isPowerAnklet());
-		setRecentBattled(new ArrayList<BattledPokemon>());
 	}
 
 	/**
@@ -173,7 +160,7 @@ public class EVPokemon {
 		mSpeed += value;
 	}
 	
-	public void addPokemon(EVPokemon p)
+	public void addPokemon(EVPokemonOld p)
 	{
 		// Set multiplier based on if pokemon has PKRS and is
 		// holding Macho Brace
@@ -226,62 +213,6 @@ public class EVPokemon {
 			addSpeed((p.mSpeed + 4) * multiplier);
 		} else {
 			addSpeed((p.mSpeed) * multiplier);
-		}
-	}
-	
-	public void addPokemon(BattledPokemon b)
-	{
-		// Set multiplier based on if pokemon has PKRS and is
-		// holding Macho Brace
-		int multiplier = 1;
-		
-		if (mPKRS && mMachoBrace)
-		{
-			multiplier = 4;
-		}
-		else if (mMachoBrace || mPKRS)
-		{
-			multiplier = 2;
-		}
-		else
-		{
-			multiplier = 1;
-		}
-		
-		if (mPowerWeight) {
-			addHP((b.getHp() + 4) * multiplier);
-		} else {
-			addHP((b.getHp()) * multiplier);
-		}
-		
-		if (mPowerBracer) {
-			addAttack((b.getAtk() + 4) * multiplier);
-		} else {
-			addAttack((b.getAtk()) * multiplier);
-		}
-		
-		if (mPowerBelt) {
-			addDefense((b.getDef() + 4) * multiplier);
-		} else {
-			addDefense((b.getDef()) * multiplier);
-		}
-		
-		if (mPowerLens) {
-			addSpAttack((b.getSpAtk() + 4) * multiplier);
-		} else {
-			addSpAttack((b.getSpAtk()) * multiplier);
-		}
-		
-		if (mPowerBand) {
-			addSpDefense((b.getSpDef() + 4) * multiplier);
-		} else {
-			addSpDefense((b.getSpDef()) * multiplier);
-		}
-		
-		if (mPowerAnklet) {
-			addSpeed((b.getSpeed() + 4) * multiplier);
-		} else {
-			addSpeed((b.getSpeed()) * multiplier);
 		}
 	}
 	
@@ -429,38 +360,7 @@ public class EVPokemon {
 	public void setPowerAnklet(Boolean powerAnklet) {
 		mPowerAnklet = powerAnklet;
 	}
-
-	public ArrayList<BattledPokemon> getRecentBattled() {
-		return mRecentBattled;
-	}
-
-	public void setRecentBattled(ArrayList<BattledPokemon> recentBattled) {
-		mRecentBattled = recentBattled;
-	}
 	
-	public void addRecent(BattledPokemon battled)
-	{
-		if (mRecentBattled.size() == 10)
-		{
-			mRecentBattled.remove(9);
-			mRecentBattled.add(0, battled);
-		}
-		else
-		{
-			mRecentBattled.add(0, battled);
-		}
-	}
-	
-	public void removeRecent(BattledPokemon battled)
-	{
-		mRecentBattled.remove(battled);
-	}
-	
-	public BattledPokemon getRecentBattledAtIndex(int index)
-	{
-		return mRecentBattled.get(index);
-	}
-
 	@Override
 	public String toString() {
 		return "[National Number=" + mPokemonNumber
@@ -490,14 +390,6 @@ public class EVPokemon {
 		json.put(JSON_POWER_BAND, mPowerBand);
 		json.put(JSON_POWER_LENS, mPowerLens);
 		json.put(JSON_POWER_ANKLET, mPowerAnklet);
-		
-		JSONArray pokemonArray = new JSONArray();
-		for (BattledPokemon b : mRecentBattled)
-		{
-			pokemonArray.put(b.toJSON());
-		}
-		
-		json.put(JSON_BATTLED, pokemonArray);
 		
 		return json;
 	}

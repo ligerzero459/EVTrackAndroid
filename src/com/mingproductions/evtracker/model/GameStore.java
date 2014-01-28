@@ -2,6 +2,10 @@ package com.mingproductions.evtracker.model;
 
 import java.util.ArrayList;
 
+import com.mingproductions.evtracker.model.old.DataConverter;
+import com.mingproductions.evtracker.model.old.EVTrackerJSONSerializerOld;
+import com.mingproductions.evtracker.model.old.PokemonGameOld;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -10,6 +14,7 @@ public class GameStore {
 	
 	private ArrayList<PokemonGame> allGames;
 	private EVTrackerJSONSerializer mSerializer;
+	private EVTrackerJSONSerializerOld mSerializerOld;
 	
 	private static GameStore sharedStore;
 	private Context mAppContext;
@@ -36,6 +41,25 @@ public class GameStore {
 		
 	}
 	
+	private GameStore(Context appContext, boolean migrated)
+	{
+		mAppContext = appContext;
+		mSerializer = new EVTrackerJSONSerializer(mAppContext, FILENAME);
+		mSerializerOld = new EVTrackerJSONSerializerOld(mAppContext, FILENAME);
+		
+		try
+		{
+			ArrayList<PokemonGameOld> oldGames = mSerializerOld.loadGames();
+			allGames = DataConverter.converter(mAppContext).convertOldGames(oldGames);
+			mSerializer.saveGames(allGames);
+		}
+		catch (Exception ex)
+		{
+			allGames = new ArrayList<PokemonGame>();
+		}
+		
+	}
+	
 	/**
 	 * sharedStore
 	 * @param c - Activity Context
@@ -49,6 +73,16 @@ public class GameStore {
 		if (sharedStore == null)
 		{
 			sharedStore = new GameStore(c.getApplicationContext());
+		}
+		
+		return sharedStore;
+	}
+	
+	public static GameStore sharedStore(Context c, boolean migrated)
+	{
+		if (sharedStore == null)
+		{
+			sharedStore = new GameStore(c.getApplicationContext(), migrated);
 		}
 		
 		return sharedStore;
@@ -96,4 +130,5 @@ public class GameStore {
 			Log.e("GameStore", "Error Saving Games", ex);
 		}
 	}
+	
 }

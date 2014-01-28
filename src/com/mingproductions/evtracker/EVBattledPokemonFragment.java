@@ -17,6 +17,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.mingproductions.evtracker.adapter.PokedexAdapter;
 import com.mingproductions.evtracker.listener.EVAdListener;
+import com.mingproductions.evtracker.model.BattledPokemon;
 import com.mingproductions.evtracker.model.EVPokemon;
 import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
@@ -113,6 +114,7 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		EVPokemon selectedP = (EVPokemon)l.getItemAtPosition(position);
 
 		mPokemon.addPokemon(selectedP);
+		mPokemon.addRecent(new BattledPokemon(selectedP));
 
 		GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).replacePokemon(mPokemonPos, mPokemon);
 		

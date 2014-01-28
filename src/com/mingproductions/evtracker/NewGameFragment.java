@@ -99,7 +99,7 @@ public class NewGameFragment extends SherlockListFragment {
 			}
 		});
 		
-		request = new AdRequest.Builder().addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB").build();
+		request = new AdRequest.Builder().addTestDevice("CC76AC3414081FCAA8F95B228B622FBB").build();
 		adView  = (AdView) v.findViewById(R.id.adView);
 		adView.setAdListener(new EVAdListener(adView));
 		adView.loadAd(request);

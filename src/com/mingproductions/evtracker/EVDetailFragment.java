@@ -2,20 +2,23 @@ package com.mingproductions.evtracker;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnKeyListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.mingproductions.evtracker.adapter.RecentAdapter;
 import com.mingproductions.evtracker.model.EVPokemon;
 import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
@@ -26,6 +29,7 @@ public class EVDetailFragment extends SherlockFragment {
 	private EVPokemon mPokemon;
 	private int mGamePos;
 	private int mPokemonPos;
+	private RecentAdapter adapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
@@ -42,6 +46,7 @@ public class EVDetailFragment extends SherlockFragment {
 		 * finds a specific Pokemon in that game
 		 */
 		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
+		adapter = new RecentAdapter(mPokemon.getRecentBattled(), getActivity());
 		
 		// Set logo in title bar
 		if (mPokemon.getPokemonNumber() < 10)
@@ -113,10 +118,32 @@ public class EVDetailFragment extends SherlockFragment {
 		View v = inflater.inflate(R.layout.fragment_ev_details, parent, false);
 		
 		// TODO: Look how to retrieve touch events from a layout vs a button (onClickListener?)
+		RelativeLayout nameBox = (RelativeLayout)v.findViewById(R.id.rename_box);
+//		nameBox.setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				getFragmentManager().beginTransaction().replace(R.id.host_view, 
+//						RenamePokemonFragment.newInstance(mPokemonPos, mGamePos))
+//						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+//				
+//			}
+//		});
+		
 		TextView pokemonName = (TextView)v.findViewById(R.id.pokemon_name);
 		pokemonName.setText(mPokemon.getPokemonName());
 		
 		ImageView pokemonImage = (ImageView)v.findViewById(R.id.pokemon_image);
+//		pokemonImage.setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				getFragmentManager().beginTransaction().replace(R.id.host_view, 
+//						RenamePokemonFragment.newInstance(mPokemonPos, mGamePos))
+//						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+//				
+//			}
+//		});
 		Drawable image = null;
 		
 		if (mPokemon.getPokemonNumber() < 10)
@@ -157,7 +184,7 @@ public class EVDetailFragment extends SherlockFragment {
 			@Override
 			public void onClick(View v) {
 				getFragmentManager().beginTransaction()
-				.replace(R.id.host_view, EVBattledPokemonFragment.newInstance(mPokemonPos, mGamePos)).addToBackStack(null).commit();
+				.replace(R.id.host_view, EVBattledPokemonFragment.newInstance(mPokemonPos, mGamePos)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			}
 		});
 		
@@ -167,7 +194,24 @@ public class EVDetailFragment extends SherlockFragment {
 			@Override
 			public void onClick(View v) {
 				getFragmentManager().beginTransaction()
-				.replace(R.id.host_view, EVFixFragment.newInstance(mPokemonPos, mGamePos)).addToBackStack(null).commit();
+				.replace(R.id.host_view, EVFixFragment.newInstance(mPokemonPos, mGamePos)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+			}
+		});
+		
+		ListView recentList = (ListView)v.findViewById(R.id.recent_list);
+		recentList.setAdapter(adapter);
+		recentList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View v, int position,
+					long id) {
+				mPokemon.getRecentBattledAtIndex(position).incrementBattled();
+				mPokemon.addPokemon(mPokemon.getRecentBattledAtIndex(position));
+				
+				GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).replacePokemon(mPokemonPos, mPokemon);
+				GameStore.sharedStore(getActivity()).saveGames();
+				EVDetailFragment.this.adapter.notifyDataSetChanged();
+				populateLabels();
 			}
 		});
 		
@@ -198,12 +242,36 @@ public class EVDetailFragment extends SherlockFragment {
 		case R.id.menu_item_ev_items:
 		{
 			getFragmentManager().beginTransaction()
-			.replace(R.id.host_view, EVItemsFragment.newInstance(mPokemonPos, mGamePos)).addToBackStack(null).commit();
+			.replace(R.id.host_view, EVItemsFragment.newInstance(mPokemonPos, mGamePos)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			return true;
 		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	public void populateLabels()
+	{
+		TextView hp = (TextView)getView().findViewById(R.id.hp_evs);
+		hp.setText(mPokemon.getHp() + "/255");
+		
+		TextView atk = (TextView)getView().findViewById(R.id.atk_evs);
+		atk.setText(mPokemon.getAtk() + "/255");
+		
+		TextView def = (TextView)getView().findViewById(R.id.def_evs);
+		def.setText(mPokemon.getDef() + "/255");
+		
+		TextView spatk = (TextView)getView().findViewById(R.id.sp_atk_evs);
+		spatk.setText(mPokemon.getSpAtk() + "/255");
+		
+		TextView spdef = (TextView)getView().findViewById(R.id.sp_def_evs);
+		spdef.setText(mPokemon.getSpDef() + "/255");
+		
+		TextView speed = (TextView)getView().findViewById(R.id.speed_evs);
+		speed.setText(mPokemon.getSpeed() + "/255");
+		
+		TextView total = (TextView)getView().findViewById(R.id.total_evs);
+		total.setText(mPokemon.getTotal() + "/510");
 	}
 	
 	public static EVDetailFragment newInstance(int position, int game)

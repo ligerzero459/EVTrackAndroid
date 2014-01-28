@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -24,8 +25,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.mingproductions.evtracker.adapter.GameAdapter;
 import com.mingproductions.evtracker.model.FragmentStorage;
 import com.mingproductions.evtracker.model.GameStore;
-import com.mingproductions.evtracker.model.GameTableStore;
-import com.mingproductions.evtracker.model.PokedexStore;
 import com.mingproductions.evtracker.model.PokemonGame;
 
 public class ListGameFragment extends SherlockListFragment {
@@ -38,9 +37,6 @@ public class ListGameFragment extends SherlockListFragment {
 	public void onCreate(Bundle savedInstanceBundle)
 	{
 		super.onCreate(savedInstanceBundle);
-
-		PokedexStore.sharedStore(getActivity());
-		GameTableStore.sharedStore(getActivity());
 
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
@@ -65,7 +61,7 @@ public class ListGameFragment extends SherlockListFragment {
 		{
 			for (Fragment f : FragmentStorage.sharedStore(getActivity()).allFragmentsList())
 			{
-				getFragmentManager().beginTransaction().replace(R.id.host_view, f).addToBackStack(null).commit();
+				getFragmentManager().beginTransaction().replace(R.id.host_view, f).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			}
 			FragmentStorage.sharedStore(getActivity()).setTabChanged(false);
 		}
@@ -86,7 +82,7 @@ public class ListGameFragment extends SherlockListFragment {
 
 			@Override
 			public void onClick(View v) {
-				getFragmentManager().beginTransaction().replace(R.id.host_view, new NewGameFragment()).addToBackStack(null).commit();
+				getFragmentManager().beginTransaction().replace(R.id.host_view, new NewGameFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			}
 		});
 
@@ -189,7 +185,7 @@ public class ListGameFragment extends SherlockListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
 		getFragmentManager().beginTransaction().replace(R.id.host_view, ListPokemonFragment.newInstance(position))
-							.addToBackStack(null).commit();
+							.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 	}
 
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -206,7 +202,7 @@ public class ListGameFragment extends SherlockListFragment {
 		case R.id.menu_item_new_game:
 		{
 			getFragmentManager().beginTransaction().replace(R.id.host_view, new NewGameFragment())
-								.addToBackStack(null).commit();
+								.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			return true;
 		}
 		default:

@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -108,7 +109,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 			@Override
 			public void onClick(View v) {
 				getFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
-				.addToBackStack(null).commit();
+				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			}
 		});
 		
@@ -213,7 +214,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
 		Fragment evDetailFragment = EVDetailFragment.newInstance(position, mGamePos);
-		getFragmentManager().beginTransaction().replace(R.id.host_view, evDetailFragment).addToBackStack(null).commit();
+		getFragmentManager().beginTransaction().replace(R.id.host_view, evDetailFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 	}
 	
 	@Override
@@ -235,59 +236,59 @@ public class ListPokemonFragment extends SherlockListFragment {
 		case R.id.menu_item_new_pokemon:
 		{
 			getFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
-								.addToBackStack(null).commit();
+								.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			return true;
 		}
 		default:
 			return false;
 		}
 	}
-		
+	
 	private class PokemonAdapter extends ArrayAdapter<EVPokemon>
-	{
-		public PokemonAdapter(ArrayList<EVPokemon> allPokemon)
-		{
-			super(getActivity(), 0, allPokemon);
-		}
-		
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			if (convertView == null)
-			{
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_ev_pokemon, null);
-			}
-			
-			Resources resource = getResources();
-			EVPokemon p = getItem(position);
-			
-			ImageView pokemonImage = (ImageView)convertView.findViewById(R.id.image_pokemon);
-			
-			if (p.getPokemonNumber() < 10)
-				pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p00" + p.getPokemonNumber(), null, null));
-			else if (p.getPokemonNumber() < 100)
-				pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p0" + p.getPokemonNumber(), null, null));
-			else
-				pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p" + p.getPokemonNumber(), null, null));
-			
-			TextView pokemonName = (TextView)convertView.findViewById(R.id.name_pokemon);
-			pokemonName.setText(p.getPokemonName());
-			
-			TextView hp = (TextView)convertView.findViewById(R.id.hp);
-			hp.setText("" + p.getHp());
-			TextView atk = (TextView)convertView.findViewById(R.id.atk);
-			atk.setText("" + p.getAtk());
-			TextView def = (TextView)convertView.findViewById(R.id.def);
-			def.setText("" + p.getDef());
-			TextView spAtk = (TextView)convertView.findViewById(R.id.spatk);
-			spAtk.setText("" + p.getSpAtk());
-			TextView spDef = (TextView)convertView.findViewById(R.id.spdef);
-			spDef.setText("" + p.getSpDef());
-			TextView speed = (TextView)convertView.findViewById(R.id.speed);
-			speed.setText("" + p.getSpeed());
-			
-			return convertView;
-		}
-	}
+    {
+            public PokemonAdapter(ArrayList<EVPokemon> allPokemon)
+            {
+                    super(getActivity(), 0, allPokemon);
+            }
+            
+            public View getView(int position, View convertView, ViewGroup parent)
+            {
+                    if (convertView == null)
+                    {
+                            convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_ev_pokemon, null);
+                    }
+                    
+                    Resources resource = getResources();
+                    EVPokemon p = getItem(position);
+                    
+                    ImageView pokemonImage = (ImageView)convertView.findViewById(R.id.image_pokemon);
+                    
+                    if (p.getPokemonNumber() < 10)
+                            pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p00" + p.getPokemonNumber(), null, null));
+                    else if (p.getPokemonNumber() < 100)
+                            pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p0" + p.getPokemonNumber(), null, null));
+                    else
+                            pokemonImage.setImageResource(resource.getIdentifier("com.mingproductions.evtracker:drawable/p" + p.getPokemonNumber(), null, null));
+                    
+                    TextView pokemonName = (TextView)convertView.findViewById(R.id.name_pokemon);
+                    pokemonName.setText(p.getPokemonName());
+                    
+                    TextView hp = (TextView)convertView.findViewById(R.id.hp);
+                    hp.setText("" + p.getHp());
+                    TextView atk = (TextView)convertView.findViewById(R.id.atk);
+                    atk.setText("" + p.getAtk());
+                    TextView def = (TextView)convertView.findViewById(R.id.def);
+                    def.setText("" + p.getDef());
+                    TextView spAtk = (TextView)convertView.findViewById(R.id.spatk);
+                    spAtk.setText("" + p.getSpAtk());
+                    TextView spDef = (TextView)convertView.findViewById(R.id.spdef);
+                    spDef.setText("" + p.getSpDef());
+                    TextView speed = (TextView)convertView.findViewById(R.id.speed);
+                    speed.setText("" + p.getSpeed());
+                    
+                    return convertView;
+            }
+    }
 	
 	public static ListPokemonFragment newInstance(int position)
 	{

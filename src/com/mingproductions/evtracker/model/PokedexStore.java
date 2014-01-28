@@ -1,21 +1,51 @@
 package com.mingproductions.evtracker.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import com.mingproductions.evtracker.PListParsing;
+import com.mingproductions.evtracker.model.old.DataConverter;
+import com.mingproductions.evtracker.model.old.EVPokemonOld;
+import com.mingproductions.evtracker.model.old.EVTrackerJSONSerializerOld;
 
 import android.content.Context;
-import android.content.res.AssetManager;
+import android.util.Log;
 
 public class PokedexStore {
 	private ArrayList<EVPokemon> allPokemon;
+	private Context mAppContext;
 	
 	private static PokedexStore sharedStore;
+	private EVTrackerJSONSerializer mSerializer;
+	private EVTrackerJSONSerializerOld mSerializerOld;
 	
 	private PokedexStore(Context appContext)
 	{
-		allPokemon = new ArrayList<EVPokemon>();
+		mAppContext = appContext;
+		mSerializer = new EVTrackerJSONSerializer(mAppContext, "pokedex.json");
+		try
+		{
+			allPokemon = mSerializer.loadPokedex();
+		}
+		catch (Exception ex)
+		{
+			Log.e("PokedexStore", "Unable to load pokedex", ex);
+		}
+	}
+	
+	private PokedexStore(Context appContext, boolean migrate)
+	{
+		mAppContext = appContext;
+		mSerializer = new EVTrackerJSONSerializer(mAppContext, "pokedex.json");
+		mSerializerOld = new EVTrackerJSONSerializerOld(mAppContext, "pokedex.json");
+		try
+		{
+			ArrayList<EVPokemonOld> allPokemonOld = mSerializerOld.loadPokedex();
+			allPokemon = DataConverter.converter(mAppContext).convertOldPokemons(allPokemonOld);
+			mSerializer.savePokedex(allPokemon);
+		}
+		catch (Exception ex)
+		{
+			Log.e("PokedexStore", "Unable to load pokedex", ex);
+		}
 	}
 	
 	public static PokedexStore sharedStore(Context c)
@@ -23,19 +53,16 @@ public class PokedexStore {
 		if (sharedStore == null)
 		{
 			sharedStore = new PokedexStore(c.getApplicationContext());
-			try
-			{
-				AssetManager mgr = c.getAssets();
-				PListParsing.PopulatePokedex(mgr, c);
-			}
-			catch(IOException ex)
-			{
-				ex.printStackTrace();
-			}
-			catch(NullPointerException ex)
-			{
-				ex.printStackTrace();
-			}
+		}
+		
+		return sharedStore;
+	}
+	
+	public static PokedexStore sharedStore(Context c, boolean migrate)
+	{
+		if (sharedStore == null)
+		{
+			sharedStore = new PokedexStore(c.getApplicationContext(), migrate);
 		}
 		
 		return sharedStore;
@@ -68,5 +95,17 @@ public class PokedexStore {
 		toString.concat("}");
 		
 		return toString;
+	}
+	
+	public void savePokedex()
+	{
+		try
+		{
+			mSerializer.savePokedex(PokedexStore.sharedStore(mAppContext).allPokemon());
+		}
+		catch (Exception ex)
+		{
+			Log.e("GameStore", "Error Saving Pokedex", ex);
+		}
 	}
 }

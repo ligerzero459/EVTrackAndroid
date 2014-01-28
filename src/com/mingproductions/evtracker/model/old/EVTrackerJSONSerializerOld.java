@@ -1,4 +1,4 @@
-package com.mingproductions.evtracker.model;
+package com.mingproductions.evtracker.model.old;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,21 +17,21 @@ import org.json.JSONTokener;
 import android.content.Context;
 import android.util.Log;
 
-public class EVTrackerJSONSerializer {
+public class EVTrackerJSONSerializerOld {
 
 	private Context mContext;
 	private String mFilename;
 
-	public EVTrackerJSONSerializer(Context c, String f)
+	public EVTrackerJSONSerializerOld(Context c, String f)
 	{
 		mContext = c;
 		mFilename = f;
 	}
 
-	public void saveGames(ArrayList<PokemonGame> games) throws JSONException, IOException {
+	public void saveGames(ArrayList<PokemonGameOld> games) throws JSONException, IOException {
 		// Building array for all games in JSON
 		JSONArray array = new JSONArray();
-		for (PokemonGame g : games)
+		for (PokemonGameOld g : games)
 		{
 			array.put(g.toJSON());
 		}
@@ -54,10 +54,10 @@ public class EVTrackerJSONSerializer {
 		}
 	}
 	
-	public void savePokedex(ArrayList<EVPokemon> pokedex) throws JSONException, IOException
+	public void savePokedex(ArrayList<EVPokemonOld> pokedex) throws JSONException, IOException
 	{
 		JSONArray array = new JSONArray();
-		for (EVPokemon p : pokedex)
+		for (EVPokemonOld p : pokedex)
 		{
 			array.put(p.toJSON());
 		}
@@ -77,10 +77,10 @@ public class EVTrackerJSONSerializer {
 		}
 	}
 	
-	public void saveGameTable(ArrayList<PokemonGame> games) throws JSONException, IOException {
+	public void saveGameTable(ArrayList<PokemonGameOld> games) throws JSONException, IOException {
 		// Building array for all games in JSON
 		JSONArray array = new JSONArray();
-		for (PokemonGame g : games)
+		for (PokemonGameOld g : games)
 		{
 			array.put(g.toJSON());
 		}
@@ -102,9 +102,9 @@ public class EVTrackerJSONSerializer {
 		}
 	}
 	
-	public ArrayList<EVPokemon> loadPokedex() throws IOException, JSONException
+	public ArrayList<EVPokemonOld> loadPokedex() throws IOException, JSONException
 	{
-		ArrayList<EVPokemon> pokedex = new ArrayList<EVPokemon>();
+		ArrayList<EVPokemonOld> pokedex = new ArrayList<EVPokemonOld>();
 		
 		BufferedReader reader = null;
 		try
@@ -123,7 +123,7 @@ public class EVTrackerJSONSerializer {
 			
 			for (int i = 0; i < array.length(); i++)
 			{
-				pokedex.add(new EVPokemon(array.getJSONObject(i)));
+				pokedex.add(new EVPokemonOld(array.getJSONObject(i)));
 			}
 			
 		}
@@ -140,9 +140,9 @@ public class EVTrackerJSONSerializer {
 		return pokedex;
 	}
 	
-	public ArrayList<PokemonGame> loadGames() throws IOException, JSONException
+	public ArrayList<PokemonGameOld> loadGames() throws IOException, JSONException
 	{
-		ArrayList<PokemonGame> games = new ArrayList<PokemonGame>();
+		ArrayList<PokemonGameOld> games = new ArrayList<PokemonGameOld>();
 		
 		BufferedReader reader = null;
 		try
@@ -165,7 +165,7 @@ public class EVTrackerJSONSerializer {
 			// Build the array of crimes from JSONObjects
 			for (int i = 0; i < array.length(); i++)
 			{
-				games.add(new PokemonGame(array.getJSONObject(i)));
+				games.add(new PokemonGameOld(array.getJSONObject(i)));
 			}
 			
 			Log.d("Load Game", "Loaded from storage");
@@ -183,9 +183,9 @@ public class EVTrackerJSONSerializer {
 		return games;
 	}
 	
-	public ArrayList<PokemonGame> loadGameTable() throws IOException, JSONException
+	public ArrayList<PokemonGameOld> loadGameTable() throws IOException, JSONException
 	{
-		ArrayList<PokemonGame> games = new ArrayList<PokemonGame>();
+		ArrayList<PokemonGameOld> games = new ArrayList<PokemonGameOld>();
 		
 		BufferedReader reader = null;
 		try
@@ -208,7 +208,7 @@ public class EVTrackerJSONSerializer {
 			// Build the array of crimes from JSONObjects
 			for (int i = 0; i < array.length(); i++)
 			{
-				games.add(new PokemonGame(array.getJSONObject(i)));
+				games.add(new PokemonGameOld(array.getJSONObject(i)));
 			}
 			
 		}
