@@ -39,7 +39,7 @@ public class SocialFragment extends SherlockFragment {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				intent.setData(Uri.parse(fbURL));
 				
-				final PackageManager packageManager = getActivity().getPackageManager();
+				final PackageManager packageManager = getSherlockActivity().getPackageManager();
 		        List<ResolveInfo> list =
 		            packageManager.queryIntentActivities(intent,
 		            PackageManager.MATCH_DEFAULT_ONLY);
@@ -70,7 +70,7 @@ public class SocialFragment extends SherlockFragment {
 	                     "fluttr://user/{handle}", // Fluttr
 	                     "http://twitter.com/{handle}" };
 				
-				final PackageManager packageManager = getActivity().getPackageManager();
+				final PackageManager packageManager = getSherlockActivity().getPackageManager();
 				List<ResolveInfo> list = new LinkedList<ResolveInfo>();
 				
 				for (String twitterURL : twitterURLarray)

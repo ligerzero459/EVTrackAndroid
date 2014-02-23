@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 public class FragmentStorage {
 	
@@ -36,16 +37,19 @@ public class FragmentStorage {
 	public void addFragmentToList(Fragment fragment)
 	{
 		allFragmentsList.add(fragment);
+		//Log.d("FragmentStorage", getCurrentFragmentStack());
 	}
 	
 	public void removeFragmentFromList(Fragment fragment)
 	{
 		allFragmentsList.remove(fragment);
+		//Log.d("FragmentStorage", getCurrentFragmentStack());
 	}
 	
 	public void clearFragmentList()
 	{
 		allFragmentsList.clear();
+		//Log.d("FragmentStorage", getCurrentFragmentStack());
 	}
 	
 	public Fragment getFragmentAtIndex(int index)
@@ -66,6 +70,19 @@ public class FragmentStorage {
 	public boolean wasTabChanged()
 	{
 		return mTabChanged;
+	}
+	
+	public String getCurrentFragmentStack()
+	{
+		StringBuilder stack = new StringBuilder("Stack: ");
+		for (Fragment f : allFragmentsList)
+		{
+			stack.append(f.getClass().getName() + " -> ");
+		}
+		
+		stack.append("TOP");
+		
+		return stack.toString();
 	}
 
 }

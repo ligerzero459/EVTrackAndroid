@@ -31,9 +31,9 @@ public class ListPokedexFragment extends SherlockListFragment {
 	{
 		super.onCreate(savedInstanceBundle);
 
-		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
+		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getSherlockActivity()).allPokemon());
 
-		adapter = new PokedexAdapter(mPokedex, getActivity());
+		adapter = new PokedexAdapter(mPokedex, getSherlockActivity());
 		setListAdapter(adapter);
 
 		setRetainInstance(true);
@@ -53,11 +53,20 @@ public class ListPokedexFragment extends SherlockListFragment {
 	public void onResume()
 	{
 		super.onResume();
-		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
+		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getSherlockActivity()).allPokemon());
 		getSherlockActivity().getSupportActionBar().setLogo(R.drawable.ic_launcher);
 		getSherlockActivity().getSupportActionBar().setTitle("Pokedex");
 		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		adapter.notifyDataSetChanged();
+		if (adView != null)
+			adView.resume();
+		else
+		{
+			request = new AdRequest.Builder().addTestDevice("CC76AC3414081FCAA8F95B228B622FBB").build();
+			adView  = (AdView) getView().findViewById(R.id.adView);
+			adView.setAdListener(new EVAdListener(adView));
+			adView.loadAd(request);
+		}
 	}
 	
 	@Override

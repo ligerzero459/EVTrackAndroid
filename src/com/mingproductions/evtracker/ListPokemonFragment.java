@@ -3,6 +3,10 @@ package com.mingproductions.evtracker;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,45 +45,60 @@ public class ListPokemonFragment extends SherlockListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
-		super.onCreate(savedInstanceBundle);
-		mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
-		mAllPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getAllPokemon();
+		try
+		{
+			super.onCreate(savedInstanceBundle);
+			mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
+			mAllPokemon = GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).getAllPokemon();
 
-		adapter = new PokemonAdapter(mAllPokemon);
-		setListAdapter(adapter);
-		
-		setHasOptionsMenu(true);
+			adapter = new PokemonAdapter(mAllPokemon);
+			setListAdapter(adapter);
 
-		// Set the title & image to the correct game
-		getActivity().setTitle(GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getGameName());
+			setHasOptionsMenu(true);
 
-		Resources resource = getResources();
+			// Set the title & image to the correct game
+			getSherlockActivity().setTitle(GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).getGameName());
 
-		int imageId = resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
-				+ GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getImageName()
-				, null, null);
-		getSherlockActivity().getSupportActionBar().setLogo(imageId);
-		
-		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
-		
+			Resources resource = getResources();
+
+			int imageId = resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
+					+ GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).getImageName()
+					, null, null);
+			getSherlockActivity().getSupportActionBar().setLogo(imageId);
+
+			FragmentStorage.sharedStore(getSherlockActivity()).addFragmentToList(this);
+		}
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 	
 	@Override
 	public void onResume()
 	{
-		super.onResume();
-		// Set the title & image to the correct game
-		getSherlockActivity().getSupportActionBar().setTitle(GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getGameName());
+		try
+		{
+			super.onResume();
+			// Set the title & image to the correct game
+			getSherlockActivity().getSupportActionBar().setTitle(GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).getGameName());
 
-		Resources resource = getResources();
+			Resources resource = getResources();
 
-		int imageId = resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
-				+ GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).getImageName()
-				, null, null);
-		getSherlockActivity().getSupportActionBar().setLogo(imageId);	
-		// Enable Up button
-		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		((PokemonAdapter)getListAdapter()).notifyDataSetChanged();
+			int imageId = resource.getIdentifier("com.mingproductions.evtracker:drawable/" 
+					+ GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).getImageName()
+					, null, null);
+			getSherlockActivity().getSupportActionBar().setLogo(imageId);	
+			// Enable Up button
+			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			((PokemonAdapter)getListAdapter()).notifyDataSetChanged();
+		}
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 	
 	@SuppressLint("NewApi")
@@ -96,7 +115,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 			{
 				if (keyCode == KeyEvent.KEYCODE_BACK)
 				{
-					FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(myself);
+					FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(myself);
 					return true;
 				}
 				return false;
@@ -108,7 +127,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 			
 			@Override
 			public void onClick(View v) {
-				getFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
+				getSherlockActivity().getSupportFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
 				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			}
 		});
@@ -145,24 +164,40 @@ public class ListPokemonFragment extends SherlockListFragment {
 				}
 
 				@Override
-				public boolean onActionItemClicked(ActionMode mode, android.view.MenuItem item) {
+				public boolean onActionItemClicked(final ActionMode mode, android.view.MenuItem item) {
 					switch (item.getItemId())
 					{
 					case R.id.menu_item_delete_pokemon:
 					{
-						PokemonAdapter adapter = (PokemonAdapter)getListAdapter();
-
-						for (int i = adapter.getCount() - 1; i >= 0; i--)
-						{
-							if (getListView().isItemChecked(i))
-							{
-								GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).removePokemon(adapter.getItem(i));
+						final PokemonAdapter adapter = (PokemonAdapter)getListAdapter();
+						
+						Builder dialog = new AlertDialog.Builder(getSherlockActivity()).setTitle("Delete Pokemon")
+								.setMessage("Are you sure you want to delete these pokemon?");
+						dialog.setNegativeButton("No", new OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								mode.finish();
 							}
-						}
-						mode.finish();
-						GameStore.sharedStore(getActivity()).saveGames();
-						adapter.notifyDataSetInvalidated();
-						adapter.notifyDataSetChanged();
+						});
+						dialog.setPositiveButton("Delete", new OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								for (int i = adapter.getCount() - 1; i >= 0; i--)
+								{
+									if (getListView().isItemChecked(i))
+									{
+										GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).removePokemon(adapter.getItem(i));
+									}
+								}
+								GameStore.sharedStore(getSherlockActivity()).saveGames();
+								adapter.notifyDataSetInvalidated();
+								adapter.notifyDataSetChanged();
+								mode.finish();
+							}
+						});
+						dialog.create().show();
 						return true;
 					}
 					default:
@@ -185,7 +220,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
 	{
-		getActivity().getMenuInflater().inflate(R.menu.fragment_pokemon_delete, menu);
+		getSherlockActivity().getMenuInflater().inflate(R.menu.fragment_pokemon_delete, menu);
 	}
 	
 	@Override
@@ -193,16 +228,26 @@ public class ListPokemonFragment extends SherlockListFragment {
 	{
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		int position = info.position;
-		PokemonAdapter adapter = (PokemonAdapter)getListAdapter();
-		EVPokemon pokemon = adapter.getItem(position);
+		final PokemonAdapter adapter = (PokemonAdapter)getListAdapter();
+		final EVPokemon pokemon = adapter.getItem(position);
 		
 		switch(item.getItemId())
 		{
 		case R.id.menu_item_delete_pokemon:
 		{
-			GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).removePokemon(pokemon);
-			adapter.notifyDataSetInvalidated();
-			adapter.notifyDataSetChanged();
+			Builder dialog = new AlertDialog.Builder(getSherlockActivity()).setTitle("Delete Pokemon")
+					.setMessage("Are you sure you want to delete " + pokemon.getPokemonName() + "?");
+			dialog.setNegativeButton("No", null);
+			dialog.setPositiveButton("Delete", new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).removePokemon(pokemon);
+					adapter.notifyDataSetInvalidated();
+					adapter.notifyDataSetChanged();
+				}
+			});
+			dialog.create().show();
 			return true;
 		}
 		default:
@@ -214,7 +259,7 @@ public class ListPokemonFragment extends SherlockListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
 		Fragment evDetailFragment = EVDetailFragment.newInstance(position, mGamePos);
-		getFragmentManager().beginTransaction().replace(R.id.host_view, evDetailFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+		getSherlockActivity().getSupportFragmentManager().beginTransaction().replace(R.id.host_view, evDetailFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 	}
 	
 	@Override
@@ -230,12 +275,12 @@ public class ListPokemonFragment extends SherlockListFragment {
 		switch(item.getItemId())
 		{
 		case android.R.id.home:
-			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-			getFragmentManager().popBackStackImmediate();
+			FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+			getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 			return true;
 		case R.id.menu_item_new_pokemon:
 		{
-			getFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
+			getSherlockActivity().getSupportFragmentManager().beginTransaction().replace(R.id.host_view, NewPokemonFragment.newInstance(mGamePos))
 								.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			return true;
 		}
@@ -248,14 +293,14 @@ public class ListPokemonFragment extends SherlockListFragment {
     {
             public PokemonAdapter(ArrayList<EVPokemon> allPokemon)
             {
-                    super(getActivity(), 0, allPokemon);
+                    super(getSherlockActivity(), 0, allPokemon);
             }
             
             public View getView(int position, View convertView, ViewGroup parent)
             {
                     if (convertView == null)
                     {
-                            convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_ev_pokemon, null);
+                            convertView = getSherlockActivity().getLayoutInflater().inflate(R.layout.list_item_ev_pokemon, null);
                     }
                     
                     Resources resource = getResources();

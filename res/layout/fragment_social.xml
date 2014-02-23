@@ -11,18 +11,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="47dp"
+        android:gravity="center_horizontal"
         android:text="@string/social_facebook"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/White" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="@string/social_twitter"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/White" />
 
@@ -31,12 +21,12 @@
         android:layout_width="135dp"
         android:layout_height="135dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="37dp"
+        android:layout_below="@+id/textView1"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="37dp"
+        android:contentDescription="@string/facebook"
         android:scaleType="fitCenter"
-        android:src="@drawable/facebook_icon"
-        android:contentDescription="@string/facebook" />
+        android:src="@drawable/facebook_icon" />
 
     <ImageButton
         android:id="@+id/twitter_button"

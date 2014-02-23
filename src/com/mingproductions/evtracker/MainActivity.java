@@ -1,6 +1,7 @@
 package com.mingproductions.evtracker;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.bugsense.trace.BugSenseHandler;
+import com.bugsense.trace.ExceptionCallback;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.mingproductions.evtracker.adapter.TabsPagerAdapter;
 import com.mingproductions.evtracker.model.FragmentStorage;
@@ -18,7 +20,7 @@ import com.mingproductions.evtracker.model.GameStore;
 import com.mingproductions.evtracker.model.GameTableStore;
 import com.mingproductions.evtracker.model.PokedexStore;
 
-public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener, ExceptionCallback {
 	
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
@@ -33,6 +35,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	{
 		super.onCreate(savedInstanceState);
 		BugSenseHandler.initAndStartSession(this, "25efee78");
+		BugSenseHandler.setExceptionCallback(this);
 		setContentView(R.layout.activity_main_2);
 		
 		 // Initialization
@@ -78,8 +81,9 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	{
 		Date restart = new Date();
 		long secondsInBackground = (restart.getTime() - lastRun.getTime()) / 1000;
-		if (secondsInBackground >= 900)
+		if (secondsInBackground >= 300)
 		{
+			FragmentStorage.sharedStore(this).clearFragmentList();
 			getSupportActionBar().selectTab(getSupportActionBar().getTabAt(0));
 		}
 		super.onResume();
@@ -95,9 +99,9 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	@Override
 	public void onStop()
 	{
-		super.onStop();
 		BugSenseHandler.closeSession(this);
 		EasyTracker.getInstance(this).activityStop(this);
+		super.onStop();
 	}
 	
 	@Override
@@ -125,6 +129,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			ft.replace(R.id.host_view, mAdapter.getItem(tab.getPosition()));
 		}
+		else if (tab.getPosition() == 2)
+		{
+			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			ft.replace(R.id.host_view, mAdapter.getItem(tab.getPosition()));
+		}
 	}
 	
 	@Override
@@ -147,6 +156,20 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			}
 		}
 		super.onBackPressed();
+	}
+
+	@Override
+	public void lastBreath(Exception ex) {
+		if (ex instanceof IllegalStateException)
+		{
+			Date restart = new Date();
+			long secondsInBackground = (restart.getTime() - lastRun.getTime()) / 1000;
+			HashMap<String, String> extras = new HashMap<String, String>();
+			extras.put("secondsInBackground", new StringBuilder().append(secondsInBackground).toString());
+			extras.put("currentFragmentStack", FragmentStorage.sharedStore(this).getCurrentFragmentStack());
+			extras.put("Full Stack Trace", ex.toString());
+			BugSenseHandler.addCrashExtraMap(extras);
+		}
 	}
 
 }

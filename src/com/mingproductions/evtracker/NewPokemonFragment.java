@@ -36,18 +36,26 @@ public class NewPokemonFragment extends SherlockListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
-		super.onCreate(savedInstanceBundle);
+		try
+		{
+			super.onCreate(savedInstanceBundle);
 
-		mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
-		mAllPokemon = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
+			mGamePos = (int)getArguments().getInt(ListGameFragment.EXTRA_GAME_POSITION);
+			mAllPokemon = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getSherlockActivity()).allPokemon());
 
-		adapter = new PokemonAdapter(mAllPokemon, getActivity());
-		setListAdapter(adapter);
-		
-		setHasOptionsMenu(true);
-		setRetainInstance(true);
-		
-		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+			adapter = new PokemonAdapter(mAllPokemon, getSherlockActivity());
+			setListAdapter(adapter);
+
+			setHasOptionsMenu(true);
+			setRetainInstance(true);
+
+			FragmentStorage.sharedStore(getSherlockActivity()).addFragmentToList(this);
+		}
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 	
 	@Override
@@ -59,11 +67,27 @@ public class NewPokemonFragment extends SherlockListFragment {
 	@Override
 	public void onResume()
 	{
-		super.onResume();
-		mAllPokemon = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
-		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSherlockActivity().getSupportActionBar().setTitle("New Pokemon");
-		adapter.notifyDataSetChanged();
+		try {
+			super.onResume();
+			mAllPokemon = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getSherlockActivity()).allPokemon());
+			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			getSherlockActivity().getSupportActionBar().setTitle("New Pokemon");
+			adapter.notifyDataSetChanged();
+			if (adView != null)
+				adView.resume();
+			else
+			{
+				request = new AdRequest.Builder().addTestDevice("CC76AC3414081FCAA8F95B228B622FBB").build();
+				adView  = (AdView) getView().findViewById(R.id.adView);
+				adView.setAdListener(new EVAdListener(adView));
+				adView.loadAd(request);
+			}
+		} 
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
@@ -119,11 +143,11 @@ public class NewPokemonFragment extends SherlockListFragment {
 		EVPokemon newPokemon = new EVPokemon(mAllPokemon.get(selectedIndex).getPokemonNumber(), 
 				mAllPokemon.get(selectedIndex).getPokemonName());
 
-		GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).addPokemon(newPokemon);
-		GameStore.sharedStore(getActivity()).saveGames();
+		GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).addPokemon(newPokemon);
+		GameStore.sharedStore(getSherlockActivity()).saveGames();
 		
-		FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-		getFragmentManager().popBackStackImmediate();
+		FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+		getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 	}
 
 	@Override
@@ -138,8 +162,8 @@ public class NewPokemonFragment extends SherlockListFragment {
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-			getFragmentManager().popBackStackImmediate();
+			FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+			getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

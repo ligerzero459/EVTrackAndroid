@@ -3,6 +3,10 @@ package com.mingproductions.evtracker;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,38 +40,61 @@ public class ListGameFragment extends SherlockListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
-		super.onCreate(savedInstanceBundle);
+		try {
+			super.onCreate(savedInstanceBundle);
 
-		setHasOptionsMenu(true);
-		setRetainInstance(true);
+			setHasOptionsMenu(true);
+			setRetainInstance(true);
 
-		mAllGames = GameStore.sharedStore(getActivity()).allGames();
+			mAllGames = GameStore.sharedStore(getSherlockActivity()).allGames();
 
-		GameAdapter adapter = new GameAdapter(mAllGames, getActivity());
-		setListAdapter(adapter);
+			GameAdapter adapter = new GameAdapter(mAllGames, getSherlockActivity());
+			setListAdapter(adapter);
+		} 
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 
 	@Override
 	public void onResume()
 	{
-		super.onResume();
-		((GameAdapter)getListAdapter()).notifyDataSetChanged();
-		getSherlockActivity().getSupportActionBar().setLogo(R.drawable.ic_launcher);
-		getSherlockActivity().getSupportActionBar().setTitle("EV Tracker");
-		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		
-		if (FragmentStorage.sharedStore(getActivity()).allFragmentsList() != null &&
-				FragmentStorage.sharedStore(getActivity()).wasTabChanged())
-		{
-			for (Fragment f : FragmentStorage.sharedStore(getActivity()).allFragmentsList())
+		try {
+			super.onResume();
+			((GameAdapter)getListAdapter()).notifyDataSetChanged();
+			getSherlockActivity().getSupportActionBar().setLogo(R.drawable.ic_launcher);
+			getSherlockActivity().getSupportActionBar().setTitle("EV Tracker");
+			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+			
+			if (FragmentStorage.sharedStore(getSherlockActivity()).allFragmentsList() != null &&
+					FragmentStorage.sharedStore(getSherlockActivity()).wasTabChanged())
 			{
-				getFragmentManager().beginTransaction().replace(R.id.host_view, f).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+				for (Fragment f : FragmentStorage.sharedStore(getSherlockActivity()).allFragmentsList())
+				{
+					try 
+					{
+						getFragmentManager().beginTransaction().replace(R.id.host_view, f).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+					}
+					catch (IllegalStateException e)
+					{
+						FragmentStorage.sharedStore(getSherlockActivity()).setTabChanged(false);
+						FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+						getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+					}
+				}
+				FragmentStorage.sharedStore(getSherlockActivity()).setTabChanged(false);
 			}
-			FragmentStorage.sharedStore(getActivity()).setTabChanged(false);
+			else if (!FragmentStorage.sharedStore(getSherlockActivity()).wasTabChanged())
+			{
+				FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			}
 		}
-		else if (!FragmentStorage.sharedStore(getActivity()).wasTabChanged())
+		catch (Exception ex)
 		{
-			FragmentStorage.sharedStore(getActivity()).clearFragmentList();
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
 		}
 	}
 
@@ -118,23 +145,39 @@ public class ListGameFragment extends SherlockListFragment {
 				}
 
 				@Override
-				public boolean onActionItemClicked(ActionMode mode, android.view.MenuItem item) {
+				public boolean onActionItemClicked(final ActionMode mode, android.view.MenuItem item) {
 					switch (item.getItemId())
 					{
 					case R.id.menu_item_delete_game:
 					{
-						GameAdapter adapter = (GameAdapter)getListAdapter();
-
-						for (int i = adapter.getCount() - 1; i >= 0; i--)
-						{
-							if (getListView().isItemChecked(i))
-							{
-								GameStore.sharedStore(getActivity()).removeGame(adapter.getItem(i));
+						final GameAdapter adapter = (GameAdapter)getListAdapter();
+						
+						Builder dialog = new AlertDialog.Builder(getSherlockActivity()).setTitle("Delete Games")
+								.setMessage("Are you sure you want to delete these games?");
+						dialog.setNegativeButton("No", new OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								mode.finish();
 							}
-						}
-						mode.finish();
-						GameStore.sharedStore(getActivity()).saveGames();
-						adapter.notifyDataSetChanged();
+						});
+						dialog.setPositiveButton("Delete", new OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								for (int i = adapter.getCount() - 1; i >= 0; i--)
+								{
+									if (getListView().isItemChecked(i))
+									{
+										GameStore.sharedStore(getSherlockActivity()).removeGame(adapter.getItem(i));
+									}
+								}
+								GameStore.sharedStore(getSherlockActivity()).saveGames();
+								adapter.notifyDataSetChanged();
+								mode.finish();
+							}
+						});
+						dialog.create().show();
 						return true;
 					}
 					default:
@@ -157,7 +200,7 @@ public class ListGameFragment extends SherlockListFragment {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
 	{
-		getActivity().getMenuInflater().inflate(R.menu.fragment_game_delete, menu);
+		getSherlockActivity().getMenuInflater().inflate(R.menu.fragment_game_delete, menu);
 	}
 
 	@Override
@@ -165,15 +208,25 @@ public class ListGameFragment extends SherlockListFragment {
 	{
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		int position = info.position;
-		GameAdapter adapter = (GameAdapter)getListAdapter();
-		PokemonGame game = adapter.getItem(position);
+		final GameAdapter adapter = (GameAdapter)getListAdapter();
+		final PokemonGame game = adapter.getItem(position);
 
 		switch(item.getItemId())
 		{
 		case R.id.menu_item_delete_game:
 		{
-			GameStore.sharedStore(getActivity()).removeGame(game);
-			adapter.notifyDataSetChanged();
+			Builder dialog = new AlertDialog.Builder(getSherlockActivity()).setTitle("Delete Game")
+					.setMessage("Are you sure you want to delete " + game.getGameName() + "?");
+			dialog.setNegativeButton("No", null);
+			dialog.setPositiveButton("Delete", new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					GameStore.sharedStore(getSherlockActivity()).removeGame(game);
+					adapter.notifyDataSetChanged();
+				}
+			});
+			dialog.create().show();
 			return true;
 		}
 		default:

@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -27,44 +27,79 @@ public class EVItemsFragment extends SherlockFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
+		try {
+			super.onCreate(savedInstanceState);
+			setHasOptionsMenu(true);
 
-		mGamePos = getArguments().getInt("game");
-		mPokemonPos = getArguments().getInt("mPokemon");
+			mGamePos = getArguments().getInt("game");
+			mPokemonPos = getArguments().getInt("mPokemon");
 
-		/**
-		 * Breakdown: retrieves GameStore, looks for the game at mGamePos and then
-		 * finds a specific Pokemon in that game
-		 */
-		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
+			/**
+			 * Breakdown: retrieves GameStore, looks for the game at mGamePos and then
+			 * finds a specific Pokemon in that game
+			 */
+			mPokemon = GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
 
-		// Set logo in title bar
-		if (mPokemon.getPokemonNumber() < 10)
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
-		else if (mPokemon.getPokemonNumber() < 100)
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
-		else
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
-		
-		// Set title in bar
-		getSherlockActivity().getSupportActionBar().setTitle("EV Items");
-		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+			// Set logo in title bar
+			if (mPokemon.getPokemonNumber() < 10)
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
+			else if (mPokemon.getPokemonNumber() < 100)
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
+			else
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
+			
+			// Set title in bar
+			getSherlockActivity().getSupportActionBar().setTitle("EV Items");
+			FragmentStorage.sharedStore(getSherlockActivity()).addFragmentToList(this);
+		} 
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 	
 	@Override
 	public void onResume()
 	{
-		super.onResume();
-		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		try {
+			super.onResume();
+			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
 	{
+		if (mPokemon == null)
+		{
+			if (mGamePos == 0 && mPokemonPos == 0)
+			{
+				FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+				getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
+			}
+			else
+			{
+				try
+				{
+					mPokemon = GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
+				}
+				catch (Exception ex)
+				{
+					FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+					getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+				}
+			}
+		}
+		
 		View v = inflater.inflate(R.layout.fragment_ev_items, parent, false);
 		
 		final Fragment myself = this;
@@ -75,7 +110,7 @@ public class EVItemsFragment extends SherlockFragment {
 			{
 				if (keyCode == KeyEvent.KEYCODE_BACK)
 				{
-					FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(myself);
+					FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(myself);
 					return true;
 				}
 				return false;
@@ -345,7 +380,7 @@ public class EVItemsFragment extends SherlockFragment {
 	public void onPause()
 	{
 		super.onPause();
-		GameStore.sharedStore(getActivity()).saveGames();
+		GameStore.sharedStore(getSherlockActivity()).saveGames();
 	}
 	
 	@Override
@@ -354,8 +389,8 @@ public class EVItemsFragment extends SherlockFragment {
 		switch(item.getItemId())
 		{
 		case android.R.id.home:
-			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-			getFragmentManager().popBackStackImmediate();
+			FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+			getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 			return true;
 		default:
 			return false;

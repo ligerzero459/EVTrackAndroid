@@ -64,8 +64,7 @@
     
     <!-- Social -->
     <string name="social">Social</string>
-    <string name="social_facebook">Like EV Tracker on Facebook</string>
-    <string name="social_twitter">Follow on Twitter</string>
+    <string name="social_facebook">Like or Follow EV Tracker for updates on the latest bug fixes and features that are coming soon.</string>
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
 

@@ -32,16 +32,23 @@ public class NewGameFragment extends SherlockListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
-		super.onCreate(savedInstanceBundle);
+		try {
+			super.onCreate(savedInstanceBundle);
 
-		mAllGames = new ArrayList<PokemonGame>(GameTableStore.sharedStore(getActivity()).allGames());
+			mAllGames = new ArrayList<PokemonGame>(GameTableStore.sharedStore(getSherlockActivity()).allGames());
 
-		adapter = new GameAdapter(mAllGames, getActivity());
-		setListAdapter(adapter);
-		
-		setHasOptionsMenu(true);
-		
-		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+			adapter = new GameAdapter(mAllGames, getSherlockActivity());
+			setListAdapter(adapter);
+			
+			setHasOptionsMenu(true);
+			
+			FragmentStorage.sharedStore(getSherlockActivity()).addFragmentToList(this);
+		} 
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 		
 	}
 	
@@ -54,11 +61,26 @@ public class NewGameFragment extends SherlockListFragment {
 	@Override
 	public void onResume()
 	{
-		super.onResume();
-		getSherlockActivity().getSupportActionBar().setTitle("New Game");
-		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		adapter.notifyDataSetChanged();
-		adView.resume();
+		try {
+			super.onResume();
+			getSherlockActivity().getSupportActionBar().setTitle("New Game");
+			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			adapter.notifyDataSetChanged();
+			if (adView != null)
+				adView.resume();
+			else
+			{
+				request = new AdRequest.Builder().addTestDevice("CC76AC3414081FCAA8F95B228B622FBB").build();
+				adView  = (AdView) getView().findViewById(R.id.adView);
+				adView.setAdListener(new EVAdListener(adView));
+				adView.loadAd(request);
+			}
+		} 
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 	
 	@Override
@@ -112,10 +134,10 @@ public class NewGameFragment extends SherlockListFragment {
 	{
 		PokemonGame newGame = (PokemonGame)l.getItemAtPosition(position);
 
-		GameStore.sharedStore(getActivity()).addGame(newGame);
-		GameStore.sharedStore(getActivity()).saveGames();
+		GameStore.sharedStore(getSherlockActivity()).addGame(newGame);
+		GameStore.sharedStore(getSherlockActivity()).saveGames();
 
-		getFragmentManager().popBackStackImmediate();
+		getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 	}
 
 	@Override
@@ -124,8 +146,8 @@ public class NewGameFragment extends SherlockListFragment {
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-			getFragmentManager().popBackStackImmediate();
+			FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+			getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

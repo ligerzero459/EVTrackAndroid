@@ -44,23 +44,32 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		mGamePos = getArguments().getInt("game");
 		mPokemonPos = getArguments().getInt("mPokemon");
 
-		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
-		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
+		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getSherlockActivity()).allPokemon());
+		mPokemon = GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
 		
-		adapter = new PokedexAdapter(mPokedex, getActivity());
+		adapter = new PokedexAdapter(mPokedex, getSherlockActivity());
 		setListAdapter(adapter);
 		
-		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+		FragmentStorage.sharedStore(getSherlockActivity()).addFragmentToList(this);
 	}
 	
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getActivity()).allPokemon());
+		mPokedex = new ArrayList<EVPokemon>(PokedexStore.sharedStore(getSherlockActivity()).allPokemon());
 		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSherlockActivity().getSupportActionBar().setTitle("Battled Pokemon");
 		adapter.notifyDataSetChanged();
+		if (adView != null)
+			adView.resume();
+		else
+		{
+			request = new AdRequest.Builder().addTestDevice("CC76AC3414081FCAA8F95B228B622FBB").build();
+			adView  = (AdView) getView().findViewById(R.id.adView);
+			adView.setAdListener(new EVAdListener(adView));
+			adView.loadAd(request);
+		}
 	}
 	
 	@Override
@@ -111,15 +120,27 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
+		boolean alreadyBattled = false;
 		EVPokemon selectedP = (EVPokemon)l.getItemAtPosition(position);
 
 		mPokemon.addPokemon(selectedP);
-		mPokemon.addRecent(new BattledPokemon(selectedP));
+		for (BattledPokemon recent : mPokemon.getRecentBattled())
+		{
+			if (recent.getPokemonName().contentEquals(selectedP.getPokemonName()))
+			{
+				alreadyBattled = true;
+				recent.incrementBattled();
+			}
+		}
+		if (!alreadyBattled)
+		{
+			mPokemon.addRecent(new BattledPokemon(selectedP));
+		}
 
-		GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).replacePokemon(mPokemonPos, mPokemon);
+		GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).replacePokemon(mPokemonPos, mPokemon);
 		
-		FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-		getFragmentManager().popBackStackImmediate();
+		FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+		getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 	}
 
 	@Override
@@ -128,8 +149,8 @@ public class EVBattledPokemonFragment extends SherlockListFragment {
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-			getFragmentManager().popBackStackImmediate();
+			FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+			getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -1,5 +1,9 @@
 package com.mingproductions.evtracker;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -34,82 +38,79 @@ public class EVDetailFragment extends SherlockFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceBundle)
 	{
-		super.onCreate(savedInstanceBundle);
-		setHasOptionsMenu(true);
-		setRetainInstance(true);
-		
-		mGamePos = getArguments().getInt("game");
-		mPokemonPos = getArguments().getInt("mPokemon");
-		
-		/**
-		 * Breakdown: retrieves GameStore, looks for the game at mGamePos and then
-		 * finds a specific Pokemon in that game
-		 */
-		mPokemon = GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
-		adapter = new RecentAdapter(mPokemon.getRecentBattled(), getActivity());
-		
-		// Set logo in title bar
-		if (mPokemon.getPokemonNumber() < 10)
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
-		else if (mPokemon.getPokemonNumber() < 100)
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
-		else
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
-		
-		getSherlockActivity().getSupportActionBar().setTitle(mPokemon.getPokemonName());
-		FragmentStorage.sharedStore(getActivity()).addFragmentToList(this);
+		try
+		{
+			super.onCreate(savedInstanceBundle);
+			setHasOptionsMenu(true);
+			setRetainInstance(true);
+
+			mGamePos = getArguments().getInt("game");
+			mPokemonPos = getArguments().getInt("mPokemon");
+
+			/**
+			 * Breakdown: retrieves GameStore, looks for the game at mGamePos and then
+			 * finds a specific Pokemon in that game
+			 */
+			mPokemon = GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).pokemonAtIndex(mPokemonPos);
+			adapter = new RecentAdapter(mPokemon.getRecentBattled(), getSherlockActivity());
+
+			// Set logo in title bar
+			if (mPokemon.getPokemonNumber() < 10)
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
+			else if (mPokemon.getPokemonNumber() < 100)
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
+			else
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
+
+			getSherlockActivity().getSupportActionBar().setTitle(mPokemon.getPokemonName());
+			FragmentStorage.sharedStore(getSherlockActivity()).addFragmentToList(this);
+		}
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 	
 	@Override
 	public void onResume()
 	{
-		super.onResume();
-		GameStore.sharedStore(getActivity()).saveGames();
-		
-		TextView hp = (TextView)getView().findViewById(R.id.hp_evs);
-		hp.setText(mPokemon.getHp() + "/255");
-		
-		TextView atk = (TextView)getView().findViewById(R.id.atk_evs);
-		atk.setText(mPokemon.getAtk() + "/255");
-		
-		TextView def = (TextView)getView().findViewById(R.id.def_evs);
-		def.setText(mPokemon.getDef() + "/255");
-		
-		TextView spatk = (TextView)getView().findViewById(R.id.sp_atk_evs);
-		spatk.setText(mPokemon.getSpAtk() + "/255");
-		
-		TextView spdef = (TextView)getView().findViewById(R.id.sp_def_evs);
-		spdef.setText(mPokemon.getSpDef() + "/255");
-		
-		TextView speed = (TextView)getView().findViewById(R.id.speed_evs);
-		speed.setText(mPokemon.getSpeed() + "/255");
-		
-		TextView total = (TextView)getView().findViewById(R.id.total_evs);
-		total.setText(mPokemon.getTotal() + "/510");
-		
-		// Set logo in title bar
-		if (mPokemon.getPokemonNumber() < 10)
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
-		else if (mPokemon.getPokemonNumber() < 100)
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
-		else
-			getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
-					.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
-
-		getSherlockActivity().getSupportActionBar().setTitle(mPokemon.getPokemonName());
-		getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		try
+		{
+			super.onResume();
+			GameStore.sharedStore(getSherlockActivity()).saveGames();
+			
+			populateLabels();
+			
+			// Set logo in title bar
+			if (mPokemon.getPokemonNumber() < 10)
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p00" + mPokemon.getPokemonNumber(), null, null)));
+			else if (mPokemon.getPokemonNumber() < 100)
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p0" + mPokemon.getPokemonNumber(), null, null)));
+			else
+				getSherlockActivity().getSupportActionBar().setLogo(getResources().getDrawable(getResources()
+						.getIdentifier("com.mingproductions.evtracker:drawable/p" + mPokemon.getPokemonNumber(), null, null)));
+			
+			getSherlockActivity().getSupportActionBar().setTitle(mPokemon.getPokemonName());
+			getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+		catch (Exception ex)
+		{
+			FragmentStorage.sharedStore(getSherlockActivity()).clearFragmentList();
+			getSherlockActivity().getSupportActionBar().selectTab(getSherlockActivity().getSupportActionBar().getTabAt(0));
+		}
 	}
 	
 	@Override
 	public void onPause()
 	{
 		super.onPause();
-		GameStore.sharedStore(getActivity()).saveGames();
+		GameStore.sharedStore(getSherlockActivity()).saveGames();
 	}
 	
 	@Override
@@ -123,7 +124,7 @@ public class EVDetailFragment extends SherlockFragment {
 //			
 //			@Override
 //			public void onClick(View v) {
-//				getFragmentManager().beginTransaction().replace(R.id.host_view, 
+//				getSherlockActivity().getSupportFragmentManager().beginTransaction().replace(R.id.host_view, 
 //						RenamePokemonFragment.newInstance(mPokemonPos, mGamePos))
 //						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 //				
@@ -138,7 +139,7 @@ public class EVDetailFragment extends SherlockFragment {
 //			
 //			@Override
 //			public void onClick(View v) {
-//				getFragmentManager().beginTransaction().replace(R.id.host_view, 
+//				getSherlockActivity().getSupportFragmentManager().beginTransaction().replace(R.id.host_view, 
 //						RenamePokemonFragment.newInstance(mPokemonPos, mGamePos))
 //						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 //				
@@ -183,7 +184,7 @@ public class EVDetailFragment extends SherlockFragment {
 			
 			@Override
 			public void onClick(View v) {
-				getFragmentManager().beginTransaction()
+				getSherlockActivity().getSupportFragmentManager().beginTransaction()
 				.replace(R.id.host_view, EVBattledPokemonFragment.newInstance(mPokemonPos, mGamePos)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			}
 		});
@@ -193,7 +194,7 @@ public class EVDetailFragment extends SherlockFragment {
 			
 			@Override
 			public void onClick(View v) {
-				getFragmentManager().beginTransaction()
+				getSherlockActivity().getSupportFragmentManager().beginTransaction()
 				.replace(R.id.host_view, EVFixFragment.newInstance(mPokemonPos, mGamePos)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			}
 		});
@@ -208,8 +209,8 @@ public class EVDetailFragment extends SherlockFragment {
 				mPokemon.getRecentBattledAtIndex(position).incrementBattled();
 				mPokemon.addPokemon(mPokemon.getRecentBattledAtIndex(position));
 				
-				GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).replacePokemon(mPokemonPos, mPokemon);
-				GameStore.sharedStore(getActivity()).saveGames();
+				GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).replacePokemon(mPokemonPos, mPokemon);
+				GameStore.sharedStore(getSherlockActivity()).saveGames();
 				EVDetailFragment.this.adapter.notifyDataSetChanged();
 				populateLabels();
 			}
@@ -231,17 +232,27 @@ public class EVDetailFragment extends SherlockFragment {
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-			getFragmentManager().popBackStackImmediate();
+			FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(this);
+			getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
 			return true;
 		case R.id.menu_item_delete_pokemon:
-			FragmentStorage.sharedStore(getActivity()).removeFragmentFromList(this);
-			getFragmentManager().popBackStackImmediate();
-			GameStore.sharedStore(getActivity()).gameAtIndex(mGamePos).removePokemon(mPokemon);
+			Builder dialog = new AlertDialog.Builder(getSherlockActivity()).setTitle("Delete Pokemon")
+								.setMessage("Are you sure you want to delete " + mPokemon.getPokemonName() + "?");
+			dialog.setNegativeButton("No", null);
+			dialog.setPositiveButton("Delete", new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					FragmentStorage.sharedStore(getSherlockActivity()).removeFragmentFromList(getParentFragment());
+					getSherlockActivity().getSupportFragmentManager().popBackStackImmediate();
+					GameStore.sharedStore(getSherlockActivity()).gameAtIndex(mGamePos).removePokemon(mPokemon);
+				}
+			});
+			dialog.create().show();
 			return true;
 		case R.id.menu_item_ev_items:
 		{
-			getFragmentManager().beginTransaction()
+			getSherlockActivity().getSupportFragmentManager().beginTransaction()
 			.replace(R.id.host_view, EVItemsFragment.newInstance(mPokemonPos, mGamePos)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
 			return true;
 		}
